@@ -1,0 +1,13 @@
+# code files 
+*.pyc 
+
+# folders 
+
+
+# data files 
+data/KDDTest+.arff
+data/UNSW_2018_IoT_Botnet_Final_10_best_Testing.csv
+data/UNSW_NB15_testing-set.csv
+data/KDDTrain+.arff
+data/UNSW_2018_IoT_Botnet_Final_10_best_Training.csv
+data/UNSW_NB15_training-set.csv
