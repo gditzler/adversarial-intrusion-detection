@@ -3,28 +3,32 @@
 import numpy as np 
 
 
-def accs(y_true, y_hat, verb): 
+def get_performance(y_true:np.ndarray, 
+                    y_hat:np.ndarray, 
+                    verbatim:bool,
+                    pos:float=-1.0, 
+                    neg:float=1.0): 
     """
-    """
-    
+    """    
     tp, tn, fp, fn = 0., 0., 0., 0.
     
     for yt, yh in zip(y_true, y_hat): 
-        if yt == 0 and yh == 0: 
-            tn += 1
-        elif yt == 1 and yh == 1: 
-            tp += 1
-        elif yt == 0 and yh == 1: 
-            fp += 1
-        elif yt == 1 and yh == 0: 
-            fn += 1 
+        if yt == neg and yh == neg: 
+            tn += 1.
+        elif yt == pos and yh == pos: 
+            tp += 1.
+        elif yt == neg and yh == pos: 
+            fp += 1.
+        elif yt == pos and yh == neg: 
+            fn += 1.
     
     acc = (tp+tn)/(fp+fn+tp+tn)
     fs = tp/(tp+0.5+(fp+fn))
     tpr = tp/(tp+fn)
     tnr = tn/(tn+fp)
     mcc = tp*tn/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
-    if verb: 
+
+    if verbatim: 
         print(''.join([' Accuracy:  ', str(acc*100)]))
         print(''.join([' F-score:   ', str(fs*100)]))
         print(''.join([' TPR:       ', str(tpr*100)]))
