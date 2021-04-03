@@ -8,7 +8,7 @@ def get_performance(y_true:np.ndarray,
                     verbatim:bool,
                     pos:float=-1.0, 
                     neg:float=1.0): 
-    """
+    """Calculate the performance of a detector / classifier
     """    
     tp, tn, fp, fn = 0., 0., 0., 0.
     
