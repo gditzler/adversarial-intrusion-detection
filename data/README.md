@@ -1,4 +1,0 @@
-# links to the data 
-* Botnet: [train](https://drive.google.com/file/d/1UI5jEHUnvWs8WAIaXh5YNhsRUgvC8oP4/view?usp=sharing), [test](https://drive.google.com/file/d/1ziA9rYVz3kvV0ErapwiKa1wbga2JrNQ6/view?usp=sharing)
-* NSL-KDD: [train](https://drive.google.com/file/d/14vZAMCPw_65t7YiTnMFXdyxuSTXPhkeT/view?usp=sharing), [test](https://drive.google.com/file/d/1em9zIOtpYnLUlQrrXir8IFPBoKfe58Fo/view?usp=sharing) 
-* UNSWNB-15: [train](https://drive.google.com/file/d/1JN8ZIF7CaV4q77cmv8k2dNzPF15XrtMt/view?usp=sharing), [test](https://drive.google.com/file/d/1T0fWZ4MbkQoDLRY73KarUOHAPrukv4Ix/view?usp=sharing) 
