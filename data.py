@@ -4,11 +4,11 @@ import pandas as pd
 import tensorflow as tf
 
 from sklearn.svm import SVC
+from sklearn.ensemble import GradientBoostingClassifier
 
 from art.attacks.evasion import FastGradientMethod
 from art.estimators.classification import SklearnClassifier
 from art.estimators.classification.scikitlearn import ScikitlearnSVC
-
 
 def load_dataset(name:str='unswnb15'): 
     """
@@ -52,8 +52,14 @@ def standardize_df_off_tr(df_tr:pd.DataFrame, df_te:pd.DataFrame):
 
 def generate_adversarial_data(X_tr:np.ndarray, 
                               y_tr:np.ndarray, 
-                              X:np.ndarray):
-    clfr = SVC(C=1.0, kernel='rbf')
+                              X:np.ndarray, 
+                              ctype:str='svc', 
+                              atype:str='deepfool'):
+    if ctype == 'svc': 
+        clfr = SVC(C=1.0, kernel='rbf')
+    elif ctype == 'gbc': 
+        clfr = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
+
     ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
     clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
     clfr.fit(X_tr, ytr_ohe)
