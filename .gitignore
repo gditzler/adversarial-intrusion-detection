@@ -4,7 +4,8 @@
 # folders 
 
 
-# data files 
+# data files
+data/*.npz 
 data/KDDTest+.arff
 data/UNSW_2018_IoT_Botnet_Final_10_best_Testing.csv
 data/UNSW_NB15_testing-set.csv
