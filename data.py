@@ -5,10 +5,19 @@ import tensorflow as tf
 
 from sklearn.svm import SVC
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
 
-from art.attacks.evasion import FastGradientMethod
+from art.attacks.evasion import FastGradientMethod, DeepFool
+from art.attacks.evasion.carlini import CarliniL2Method
+from art.attacks.evasion.projected_gradient_descent.projected_gradient_descent import ProjectedGradientDescent
 from art.estimators.classification import SklearnClassifier
-from art.estimators.classification.scikitlearn import ScikitlearnSVC
+from art.attacks.evasion.decision_tree_attack import DecisionTreeAttack
+from art.estimators.classification import KerasClassifier
+
+
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.utils import to_categorical
 
 def load_dataset(name:str='unswnb15'): 
     """
@@ -54,15 +63,54 @@ def generate_adversarial_data(X_tr:np.ndarray,
                               y_tr:np.ndarray, 
                               X:np.ndarray, 
                               ctype:str='svc', 
-                              atype:str='deepfool'):
+                              atype:str='fgsm'):
     if ctype == 'svc': 
         clfr = SVC(C=1.0, kernel='rbf')
     elif ctype == 'gbc': 
         clfr = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
+    elif ctype == 'dt': 
+        clfr = DecisionTreeClassifier(criterion='gini', 
+                                      splitter='best', 
+                                      max_depth=10, 
+                                      min_samples_split=6, 
+                                      min_samples_leaf=4) 
 
-    ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
-    clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
-    clfr.fit(X_tr, ytr_ohe)
-    attack = FastGradientMethod(estimator=clfr, eps=.2)
+    if ctype == 'svc' or ctype == 'dt': 
+        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
+        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
+        clfr.fit(X_tr, ytr_ohe)
+    elif ctype == 'mlp': 
+        X_train, Y_train = X_tr, y_tr
+        Y_train = tf.keras.utils.to_categorical(Y_train, 2)
+        
+        input_shape = (X_tr.shape[1],)
+        num_classes = 2
+        
+        clfr = Sequential()
+        clfr.add(Dense(128, input_shape=input_shape, activation='relu'))
+        clfr.add(Dense(128, activation='relu'))
+        clfr.add(Dropout(0.2, input_shape=(128,)))
+        clfr.add(Dense(64, activation='relu'))
+        clfr.add(Dense(num_classes, activation='softmax'))
+
+        # Configure the model and start training
+        clfr.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
+        clfr.fit(X_train, Y_train, epochs=10, batch_size=250, verbose=1, validation_split=0.2)
+        clfr = KerasClassifier(model=clfr, clip_values=(-5, 5), use_logits=False)
+
+
+
+    if atype == 'fgsm': 
+        attack = FastGradientMethod(estimator=clfr, eps=.2)
+    elif atype == 'deepfool': 
+        attack = DeepFool(clfr)
+    elif atype == 'cw': 
+        attack = CarliniL2Method(classifier=clfr, targeted=False)
+    elif atype == 'pgd': 
+        attack = ProjectedGradientDescent(clfr, eps=1.0, eps_step=0.1)
+    elif atype == 'dt': 
+        if ctype != 'dt': 
+            raise ValueError('ctype and atype must both be decision trees for the attack and classifier when one is called.')
+        attack = DecisionTreeAttack(clfr)
     Xadv = attack.generate(x=X)
     return Xadv 
