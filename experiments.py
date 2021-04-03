@@ -12,6 +12,8 @@ from sklearn.ensemble import RandomForestClassifier, IsolationForest
 def run_experiment(dataset:str='unswnb15', 
                    ids:str='isofor', 
                    trials:int=10, 
+                   ctype:str='dt', 
+                   atype:str='dt',
                    verbose:bool=False): 
     """
     """
