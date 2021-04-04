@@ -51,7 +51,6 @@ def load_dataset(name:str='unswnb15'):
     return X_tr, y_tr, X_te, y_te
 
 
-
 def load_unswnb(): 
     """Load the UNDWNB15 dataset from the data/ folder. Note you need to download the data 
     and add it to the folder. 
