@@ -19,7 +19,6 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-
 import numpy as np 
 import pandas as pd
 import tensorflow as tf
@@ -32,16 +31,18 @@ from art.attacks.evasion import FastGradientMethod, DeepFool
 from art.attacks.evasion.carlini import CarliniL2Method
 from art.attacks.evasion.projected_gradient_descent.projected_gradient_descent import ProjectedGradientDescent
 from art.estimators.classification import SklearnClassifier
-from art.attacks.evasion.decision_tree_attack import DecisionTreeAttack
 from art.estimators.classification import KerasClassifier
-
+from art.attacks.evasion.decision_tree_attack import DecisionTreeAttack
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.utils import to_categorical
 
 def load_dataset(name:str='unswnb15'): 
-    """
+    """Wrapper for loading the training and testing datasets. This script will do all of 
+    the preprocessing and only return Numpy arrays with the data/labels. 
+
+    :param name: String with the name of the dataset [unswnb15]
     """
 
     if name == 'unswnb15': 
@@ -52,7 +53,11 @@ def load_dataset(name:str='unswnb15'):
 
 
 def load_unswnb(): 
-    # we need to drop these columns from the data
+    """Load the UNDWNB15 dataset from the data/ folder. Note you need to download the data 
+    and add it to the folder. 
+
+    :return Four Numpy arrays with X_tr, y_tr, X_te and y_te
+    """
     drop_cols = ['id', 'proto', 'service', 'state', 'attack_cat', 'is_sm_ips_ports']
 
     df_tr = pd.read_csv('data/UNSW_NB15_training-set.csv')
@@ -66,10 +71,12 @@ def load_unswnb():
 
 
 def standardize_df_off_tr(df_tr:pd.DataFrame, df_te:pd.DataFrame): 
-    """
-    Standardize dataframes from a training and testing frame, where the means
-    and standard deviations that are calculated from the training dataset. 
-    df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
+    """Standardize dataframes from a training and testing frame, where the means and 
+    standard deviations that are calculated from the training dataset. 
+    
+    :param df_tr: Pandas dataframe with the training data 
+    :param df_te: Pandas dataframe with the testing data 
+    :return Two dataframes df_tr and df_te that have been standardized 
     """
     for key in df_tr.keys(): 
         if key != 'target': 
@@ -86,6 +93,13 @@ def generate_adversarial_data(X_tr:np.ndarray,
                               ctype:str='svc', 
                               atype:str='fgsm'):
     """Generate adversarial data samples 
+
+    :param X_tr: Dataset 
+    :param y_tr: Labels vector 
+    :param X: Dataset that is the seed for the adversarial samples
+    :param ctype: String that is the classifier used to generate the attack ['svc', 'dt', 'mlp']
+    :param atype: String that is the attack type ['fgsm', 'dt', 'deepfool', 'cw', 'pgd']
+    :return Numpy array with the adversarial attack dataset
     """
     if ctype == 'svc': 
         clfr = SVC(C=1.0, kernel='rbf')
@@ -97,11 +111,6 @@ def generate_adversarial_data(X_tr:np.ndarray,
                                       max_depth=10, 
                                       min_samples_split=6, 
                                       min_samples_leaf=4) 
-
-    if ctype == 'svc' or ctype == 'dt': 
-        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
-        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
-        clfr.fit(X_tr, ytr_ohe)
     elif ctype == 'mlp': 
         X_train, Y_train = X_tr, y_tr
         Y_train = tf.keras.utils.to_categorical(Y_train, 2)
@@ -120,17 +129,23 @@ def generate_adversarial_data(X_tr:np.ndarray,
         clfr.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
         clfr.fit(X_train, Y_train, epochs=10, batch_size=250, verbose=1, validation_split=0.2)
         clfr = KerasClassifier(model=clfr, clip_values=(-5, 5), use_logits=False)
-
+    else: 
+        raise ValueError('Unknown classifier was set to generate the adversarial attacks.')
+    
+    if ctype == 'svc' or ctype == 'dt': 
+        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
+        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
+        clfr.fit(X_tr, ytr_ohe)
 
 
     if atype == 'fgsm': 
         attack = FastGradientMethod(estimator=clfr, eps=.2)
     elif atype == 'deepfool': 
-        attack = DeepFool(clfr)
+        attack = DeepFool(clfr, verbose=False)
     elif atype == 'cw': 
-        attack = CarliniL2Method(classifier=clfr, targeted=False)
+        attack = CarliniL2Method(classifier=clfr, targeted=False, verbose=False)
     elif atype == 'pgd': 
-        attack = ProjectedGradientDescent(clfr, eps=1.0, eps_step=0.1)
+        attack = ProjectedGradientDescent(clfr, eps=1.0, eps_step=0.1, verbose=False)
     elif atype == 'dt': 
         if ctype != 'dt': 
             raise ValueError('ctype and atype must both be decision trees for the attack and classifier when one is called.')
