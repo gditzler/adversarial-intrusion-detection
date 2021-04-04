@@ -40,3 +40,7 @@ np.savez_compressed('data/full_data_unswnb15_mlp_deepfool.npz', Xtr=Xtr, ytr=ytr
 # ctype=mlp, atype=pgd
 Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=Xte, ctype='mlp', atype='pgd')
 np.savez_compressed('data/full_data_unswnb15_mlp_pgd.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
+
+# ctype=mlp, atype=cw
+Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=Xte, ctype='mlp', atype='cw')
+np.savez_compressed('data/full_data_unswnb15_mlp_cw.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
