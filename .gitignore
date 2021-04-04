@@ -2,7 +2,8 @@
 *.pyc 
 
 # folders 
-
+.DS_Store
+.ipynb_checkpoints/
 
 # data files
 data/*.npz 
