@@ -4,6 +4,7 @@
 # folders 
 .DS_Store
 .ipynb_checkpoints/
+__pycache__/
 
 # data files
 data/*.npz 
