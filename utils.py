@@ -42,10 +42,25 @@ def get_performance(y_true:np.ndarray,
             fn += 1.
     
     acc = (tp+tn)/(fp+fn+tp+tn)
-    fs = tp/(tp+0.5+(fp+fn))
-    tpr = tp/(tp+fn)
-    tnr = tn/(tn+fp)
-    mcc = tp*tn/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
+    if tp+0.5+(fp+fn) == 0: 
+        fs = 0.
+    else: 
+        fs = tp/(tp+0.5+(fp+fn))
+
+    if tp+fn == 0: 
+        tpr = 0. 
+    else: 
+        tpr = tp/(tp+fn)
+
+    if tn+fp == 0: 
+        tnr = 0.
+    else: 
+        tnr = tn/(tn+fp)
+    
+    if tp+fp==0 or tp+fn==0 or tn+fp==0 or tn+fn==0: 
+        mcc = 0.
+    else: 
+        mcc = tp*tn/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
 
     if verbatim: 
         print(''.join([' Accuracy:  ', str(acc*100)]))
