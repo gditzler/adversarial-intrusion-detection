@@ -22,10 +22,9 @@
 
 import numpy as np 
 
-
 def get_performance(y_true:np.ndarray, 
                     y_hat:np.ndarray, 
-                    verbatim:bool,
+                    verbatim:bool=False,
                     pos:float=-1.0, 
                     neg:float=1.0): 
     """Calculate the performance of a detector / classifier
