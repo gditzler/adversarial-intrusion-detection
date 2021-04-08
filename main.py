@@ -22,11 +22,11 @@
 
 import os
 
-from experiments import run_experiment
+from experiments import run_experiment_exploratory
 
 
 if __name__ == '__main__': 
-    run_experiment(dataset='unswnb15',
-                   trials=5, 
-                   verbose=True) 
+    run_experiment_exploratory(dataset='unswnb15',
+                               trials=5, 
+                               verbose=True) 
     print('Done')
