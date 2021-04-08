@@ -39,8 +39,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     if verbose: 
         print(''.join(['Dataset: ', dataset]))
     
-    n_attacks = 4
-    n_merits = 4
     support_fraction = .5
     contamination = .05
     degree = 3
@@ -92,7 +90,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         y_svm_pgd = model.predict(X_adv_pgd)
         y_svm_dt = model.predict(X_adv_dt)
 
-        # ellicptic 
+        # elliiptic 
         model = EllipticEnvelope(contamination=contamination, support_fraction=support_fraction).fit(X_tr_n_normal)
         y_ee = model.predict(X_te)
         y_ee_deepfool = model.predict(X_adv_deepfool)
@@ -110,7 +108,12 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         y_lo_pgd = model.predict(X_adv_pgd)
         y_lo_dt = model.predict(X_adv_dt)
 
+        acc_if_baseline, fs_if_baseline, tpr_if_baseline, tnr_if_baseline, mcc_if_baseline = get_performance(y_true=y_te, y_hat=y_if)
+        acc_svm_baseline, fs_svm_baseline, tpr_svm_baseline, tnr_svm_baseline, mcc_svm_baseline = get_performance(y_true=y_te, y_hat=y_svm)
+        acc_ee_baseline, fs_ee_baseline, tpr_ee_baseline, tnr_ee_baseline, mcc_ee_baseline = get_performance(y_true=y_te, y_hat=y_ee)
+        acc_lo_baseline, fs_loo_baseline, tpr_lo_baseline, tnr_lo_baseline, mcc_lo_baseline = get_performance(y_true=y_te, y_hat=y_lo)
 
+        
         acc_if_deepfool, fs_if_deepfool, tpr_if_deepfool, tnr_if_deepfool, mcc_if_deepfool = get_performance(y_true=y_te, y_hat=y_if_deepfool)
         acc_svm_deepfool, fs_svm_deepfool, tpr_svm_deepfool, tnr_svm_deepfool, mcc_svm_deepfool = get_performance(y_true=y_te, y_hat=y_svm_deepfool)
         acc_ee_deepfool, fs_ee_deepfool, tpr_ee_deepfool, tnr_ee_deepfool, mcc_ee_deepfool = get_performance(y_true=y_te, y_hat=y_ee_deepfool)
