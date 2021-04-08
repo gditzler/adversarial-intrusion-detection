@@ -4,46 +4,46 @@
 
 import numpy as np 
 
-from data import load_dataset, generate_adversarial_data
 from sklearn.model_selection import KFold
-from sklearn.ensemble import RandomForestClassifier, IsolationForest
+from sklearn.ensemble import IsolationForest
+from sklearn.svm import OneClassSVM
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.covariance import EllipticEnvelope
+from sklearn.neighbors import LocalOutlierFactor
 
 
-def run_experiment(dataset:str='unswnb15', 
-                   ids:str='isofor', 
-                   trials:int=10, 
-                   ctype:str='dt', 
-                   atype:str='dt',
-                   verbose:bool=False): 
+def run_experiment_exploratory(dataset:str='unswnb15', 
+                               trials:int=10, 
+                               verbose:bool=False): 
     """
     """
 
     if verbose: 
         print(''.join(['Dataset: ', dataset]))
-
-    # load the dataset and split by training/testing data 
-    X_tr, y_tr, X_te, y_te = load_dataset(dataset)
-    # get the size of the tr/te data 
-    n_tr, n_te = len(X_tr), len(X_te)
-
-    # set up a cv partition over the number fo cv trials. 
-    kf = KFold(n_splits=trials)
-    kf.get_n_splits(X_tr)
-
-    t = 0
-    for train_index, test_index in kf.split(X_tr):
-        if verbose:
-            print(''.join([' -> Running round ', str(t+1), ' of ', str(trials)]))
-
-        # split the data out by the training and validation indices 
-        X_tr_t, y_tr_t, X_a_t, y_a_t = X_tr[train_index,:], y_tr[train_index], \
-            X_tr[test_index,:], y_tr[test_index]
-
-        X_adv_t = generate_adversarial_data(X_tr=X_tr_t, y_tr=y_tr_t, X=X_a_t)
+    
+    n_attacks = 4
+    n_merits = 4
 
 
+    
+    # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
+    # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
+    # labels of y_te are the initial labels of the adversarial data. 
+    data = np.load(''.join(['data/full_data_', dataset, '_dt_dt.npz']))
+    X_tr, y_tr, X_te, y_te, X_adv_dt = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
+    
+    # lad the deepfool data 
+    data = np.load(''.join(['data/full_data_', dataset, '_mlp_deepfool.npz']))
+    _, _, _, _, X_adv_deepfool = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml']
 
-        t += 1 
+    # load the fgsm data 
+    data = np.load(''.join(['data/full_data_', dataset, '_mlp_fgsm.npz']))
+    _, _, _, _, X_adv_fgsm = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
 
+    # load the pgd data 
+    data = np.load(''.join(['data/full_data_', dataset, '_mlp_pgd.npz']))
+    _, _, _, _, X_adv_pgd = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml']  
+
+    
 
     return None 
