@@ -19,6 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
+import os 
 import numpy as np 
 
 from sklearn.svm import OneClassSVM
@@ -43,8 +44,8 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     contamination = .05
     degree = 3
 
+    OUTPUT_FILE = ''.join(['outputs/results_ids_', dataset, '.npz'])
 
-    
     # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
     # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
     # labels of y_te are the initial labels of the adversarial data. 
@@ -366,5 +367,111 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     tnrs_lo_pgd /= trials
     mccs_lo_pgd /= trials
 
+    if not os.path.isdir('outputs/'):
+        os.mkdir('outputs/')
+
+
+    np.savez(OUTPUT_FILE,
+             accs_if_baseline = accs_if_baseline, 
+             fss_if_baseline = fss_if_baseline,
+             tprs_if_baseline = tprs_if_baseline,
+             tnrs_if_baseline = tnrs_if_baseline,
+             mccs_if_baseline = mccs_if_baseline,
+             accs_svm_baseline = accs_svm_baseline,
+             fss_svm_baseline  = fss_svm_baseline,
+             tprs_svm_baseline = tprs_svm_baseline,
+             tnrs_svm_baseline = tnrs_svm_baseline,
+             mccs_svm_baseline = mccs_svm_baseline,
+             accs_ee_baseline = accs_ee_baseline,
+             fss_ee_baseline = fss_ee_baseline,
+             tprs_ee_baseline = tprs_ee_baseline,
+             tnrs_ee_baseline = tnrs_ee_baseline,
+             mccs_ee_baseline = mccs_ee_baseline,
+             accs_lo_baseline = accs_lo_baseline,
+             fss_lo_baseline = fss_lo_baseline,
+             tprs_lo_baseline = tprs_lo_baseline,
+             tnrs_lo_baseline = tnrs_lo_baseline,
+             mccs_lo_baseline = mccs_lo_baseline,
+             accs_if_deepfool = accs_if_deepfool, 
+             fss_if_deepfool = fss_if_deepfool,
+             tprs_if_deepfool = tprs_if_deepfool,
+             tnrs_if_deepfool = tnrs_if_deepfool,
+             mccs_if_deepfool = mccs_if_deepfool,
+             accs_svm_deepfool = accs_svm_deepfool,
+             fss_svm_deepfool  = fss_svm_deepfool,
+             tprs_svm_deepfool = tprs_svm_deepfool,
+             tnrs_svm_deepfool = tnrs_svm_deepfool,
+             mccs_svm_deepfool = mccs_svm_deepfool,
+             accs_ee_deepfool = accs_ee_deepfool,
+             fss_ee_deepfool = fss_ee_deepfool,
+             tprs_ee_deepfool = tprs_ee_deepfool,
+             tnrs_ee_deepfool = tnrs_ee_deepfool,
+             mccs_ee_deepfool = mccs_ee_deepfool,
+             accs_lo_deepfool = accs_lo_deepfool,
+             fss_lo_deepfool = fss_lo_deepfool,
+             tprs_lo_deepfool = tprs_lo_deepfool,
+             tnrs_lo_deepfool = tnrs_lo_deepfool,
+             mccs_lo_deepfool = mccs_lo_deepfool,
+             accs_if_fgsm = accs_if_fgsm, 
+             fss_if_fgsm = fss_if_fgsm,
+             tprs_if_fgsm = tprs_if_fgsm,
+             tnrs_if_fgsm = tnrs_if_fgsm,
+             mccs_if_fgsm = mccs_if_fgsm,
+             accs_svm_fgsm = accs_svm_fgsm,
+             fss_svm_fgsm  = fss_svm_fgsm,
+             tprs_svm_fgsm = tprs_svm_fgsm,
+             tnrs_svm_fgsm = tnrs_svm_fgsm,
+             mccs_svm_fgsm = mccs_svm_fgsm,
+             accs_ee_fgsm = accs_ee_fgsm,
+             fss_ee_fgsm = fss_ee_fgsm,
+             tprs_ee_fgsm = tprs_ee_fgsm,
+             tnrs_ee_fgsm = tnrs_ee_fgsm,
+             mccs_ee_fgsm = mccs_ee_fgsm,
+             accs_lo_fgsm = accs_lo_fgsm,
+             fss_lo_fgsm = fss_lo_fgsm,
+             tprs_lo_fgsm = tprs_lo_fgsm,
+             tnrs_lo_fgsm = tnrs_lo_fgsm,
+             mccs_lo_fgsm = mccs_lo_fgsm,
+             accs_if_pgd = accs_if_pgd, 
+             fss_if_pgd = fss_if_pgd,
+             tprs_if_pgd = tprs_if_pgd,
+             tnrs_if_pgd = tnrs_if_pgd,
+             mccs_if_pgd = mccs_if_pgd,
+             accs_svm_pgd = accs_svm_pgd,
+             fss_svm_pgd  = fss_svm_pgd,
+             tprs_svm_pgd = tprs_svm_pgd,
+             tnrs_svm_pgd = tnrs_svm_pgd,
+             mccs_svm_pgd = mccs_svm_pgd,
+             accs_ee_pgd = accs_ee_pgd,
+             fss_ee_pgd = fss_ee_pgd,
+             tprs_ee_pgd = tprs_ee_pgd,
+             tnrs_ee_pgd = tnrs_ee_pgd,
+             mccs_ee_pgd = mccs_ee_pgd,
+             accs_lo_pgd = accs_lo_pgd,
+             fss_lo_pgd = fss_lo_pgd,
+             tprs_lo_pgd = tprs_lo_pgd,
+             tnrs_lo_pgd = tnrs_lo_pgd,
+             mccs_lo_pgd = mccs_lo_pgd, 
+             accs_if_dt = accs_if_dt, 
+             fss_if_dt = fss_if_dt,
+             tprs_if_dt = tprs_if_dt,
+             tnrs_if_dt = tnrs_if_dt,
+             mccs_if_dt = mccs_if_dt,
+             accs_svm_dt = accs_svm_dt,
+             fss_svm_dt  = fss_svm_dt,
+             tprs_svm_dt = tprs_svm_dt,
+             tnrs_svm_dt = tnrs_svm_dt,
+             mccs_svm_dt = mccs_svm_dt,
+             accs_ee_dt = accs_ee_dt,
+             fss_ee_dt = fss_ee_dt,
+             tprs_ee_dt = tprs_ee_dt,
+             tnrs_ee_dt = tnrs_ee_dt,
+             mccs_ee_dt = mccs_ee_dt,
+             accs_lo_dt = accs_lo_dt,
+             fss_lo_dt = fss_lo_dt,
+             tprs_lo_dt = tprs_lo_dt,
+             tnrs_lo_dt = tnrs_lo_dt,
+             mccs_lo_dt = mccs_lo_dt
+    )
 
     return None 
