@@ -92,10 +92,13 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     accs_ee_dt, fss_ee_dt, tprs_ee_dt, tnrs_ee_dt, mccs_ee_dt = 0., 0., 0., 0., 0.
     accs_lo_dt, fss_lo_dt, tprs_lo_dt, tnrs_lo_dt, mccs_lo_dt = 0., 0., 0., 0., 0.
 
-
-
-
+    ell = 0
     for train_index, _ in kf.split(X_tr):
+
+        if verbose: 
+            print(''.join(['   > Running ', str(ell+1), ' of ', str(trials)]))
+        ell += 1
+
         # split the original data into training / testing datasets. we are not going to 
         # use the testing data since we are not going to learn a classifier. 
         X_tr_n, y_tr_n = X_tr[train_index,:], y_tr[train_index]
@@ -135,17 +138,17 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         fss_if_baseline += fs_if_baseline 
         tprs_if_baseline += tpr_if_baseline
         tnrs_if_baseline += tnr_if_baseline
-        mccs_if_baseline +=mcc_if_baseline 
+        mccs_if_baseline += mcc_if_baseline 
         accs_svm_baseline += acc_svm_baseline
-        fss_svm_baseline  +=fs_svm_baseline 
+        fss_svm_baseline  += fs_svm_baseline 
         tprs_svm_baseline += tpr_svm_baseline 
         tnrs_svm_baseline += tnr_svm_baseline
-        mccs_svm_baseline +=mcc_svm_baseline
-        accs_ee_baseline  +=acc_ee_baseline 
-        fss_ee_baseline  +=fs_ee_baseline 
+        mccs_svm_baseline += mcc_svm_baseline
+        accs_ee_baseline += acc_ee_baseline 
+        fss_ee_baseline += fs_ee_baseline 
         tprs_ee_baseline += tpr_ee_baseline
         tnrs_ee_baseline += tnr_ee_baseline 
-        mccs_ee_baseline +=mcc_ee_baseline
+        mccs_ee_baseline += mcc_ee_baseline
         accs_lo_baseline += acc_lo_baseline 
         fss_lo_baseline += fs_lo_baseline 
         tprs_lo_baseline += tpr_lo_baseline 
@@ -161,17 +164,17 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         fss_if_deepfool += fs_if_deepfool 
         tprs_if_deepfool += tpr_if_deepfool
         tnrs_if_deepfool += tnr_if_deepfool
-        mccs_if_deepfool +=mcc_if_deepfool 
+        mccs_if_deepfool += mcc_if_deepfool 
         accs_svm_deepfool += acc_svm_deepfool
-        fss_svm_deepfool  +=fs_svm_deepfool 
+        fss_svm_deepfool += fs_svm_deepfool 
         tprs_svm_deepfool += tpr_svm_deepfool 
         tnrs_svm_deepfool += tnr_svm_deepfool
-        mccs_svm_deepfool +=mcc_svm_deepfool
-        accs_ee_deepfool  +=acc_ee_deepfool 
-        fss_ee_deepfool  +=fs_ee_deepfool 
+        mccs_svm_deepfool += mcc_svm_deepfool
+        accs_ee_deepfool += acc_ee_deepfool 
+        fss_ee_deepfool += fs_ee_deepfool 
         tprs_ee_deepfool += tpr_ee_deepfool
         tnrs_ee_deepfool += tnr_ee_deepfool 
-        mccs_ee_deepfool +=mcc_ee_deepfool
+        mccs_ee_deepfool += mcc_ee_deepfool
         accs_lo_deepfool += acc_lo_deepfool 
         fss_lo_deepfool += fs_lo_deepfool 
         tprs_lo_deepfool += tpr_lo_deepfool 
@@ -188,17 +191,17 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         fss_if_fgsm += fs_if_fgsm 
         tprs_if_fgsm += tpr_if_fgsm
         tnrs_if_fgsm += tnr_if_fgsm
-        mccs_if_fgsm +=mcc_if_fgsm 
+        mccs_if_fgsm += mcc_if_fgsm 
         accs_svm_fgsm += acc_svm_fgsm
-        fss_svm_fgsm  +=fs_svm_fgsm 
+        fss_svm_fgsm += fs_svm_fgsm 
         tprs_svm_fgsm += tpr_svm_fgsm 
         tnrs_svm_fgsm += tnr_svm_fgsm
-        mccs_svm_fgsm +=mcc_svm_fgsm
-        accs_ee_fgsm  +=acc_ee_fgsm 
-        fss_ee_fgsm  +=fs_ee_fgsm 
+        mccs_svm_fgsm += mcc_svm_fgsm
+        accs_ee_fgsm += acc_ee_fgsm 
+        fss_ee_fgsm += fs_ee_fgsm 
         tprs_ee_fgsm += tpr_ee_fgsm
         tnrs_ee_fgsm += tnr_ee_fgsm 
-        mccs_ee_fgsm +=mcc_ee_fgsm
+        mccs_ee_fgsm += mcc_ee_fgsm
         accs_lo_fgsm += acc_lo_fgsm 
         fss_lo_fgsm += fs_lo_fgsm 
         tprs_lo_fgsm += tpr_lo_fgsm 
@@ -215,17 +218,17 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         fss_if_pgd += fs_if_pgd 
         tprs_if_pgd += tpr_if_pgd
         tnrs_if_pgd += tnr_if_pgd
-        mccs_if_pgd +=mcc_if_pgd 
+        mccs_if_pgd += mcc_if_pgd 
         accs_svm_pgd += acc_svm_pgd
-        fss_svm_pgd  +=fs_svm_pgd 
+        fss_svm_pgd += fs_svm_pgd 
         tprs_svm_pgd += tpr_svm_pgd 
         tnrs_svm_pgd += tnr_svm_pgd
-        mccs_svm_pgd +=mcc_svm_pgd
-        accs_ee_pgd  +=acc_ee_pgd 
-        fss_ee_pgd  +=fs_ee_pgd 
+        mccs_svm_pgd += mcc_svm_pgd
+        accs_ee_pgd += acc_ee_pgd 
+        fss_ee_pgd += fs_ee_pgd 
         tprs_ee_pgd += tpr_ee_pgd
         tnrs_ee_pgd += tnr_ee_pgd 
-        mccs_ee_pgd +=mcc_ee_pgd
+        mccs_ee_pgd += mcc_ee_pgd
         accs_lo_pgd += acc_lo_pgd 
         fss_lo_pgd += fs_lo_pgd 
         tprs_lo_pgd += tpr_lo_pgd 
@@ -241,25 +244,24 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         fss_if_dt += fs_if_dt 
         tprs_if_dt += tpr_if_dt
         tnrs_if_dt += tnr_if_dt
-        mccs_if_dt +=mcc_if_dt 
+        mccs_if_dt += mcc_if_dt 
         accs_svm_dt += acc_svm_dt
-        fss_svm_dt  +=fs_svm_dt 
+        fss_svm_dt += fs_svm_dt 
         tprs_svm_dt += tpr_svm_dt 
         tnrs_svm_dt += tnr_svm_dt
-        mccs_svm_dt +=mcc_svm_dt
-        accs_ee_dt  +=acc_ee_dt 
-        fss_ee_dt  +=fs_ee_dt 
+        mccs_svm_dt += mcc_svm_dt
+        accs_ee_dt += acc_ee_dt 
+        fss_ee_dt += fs_ee_dt 
         tprs_ee_dt += tpr_ee_dt
         tnrs_ee_dt += tnr_ee_dt 
-        mccs_ee_dt +=mcc_ee_dt
+        mccs_ee_dt += mcc_ee_dt
         accs_lo_dt += acc_lo_dt 
         fss_lo_dt += fs_lo_dt 
         tprs_lo_dt += tpr_lo_dt 
         tnrs_lo_dt += tnr_lo_dt
         mccs_lo_dt += mcc_lo_dt
 
-
-
+    # scale by the number of trials that we run. 
     accs_if_baseline /= trials 
     fss_if_baseline /= trials
     tprs_if_baseline /= trials
@@ -302,7 +304,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     tprs_lo_deepfool /= trials
     tnrs_lo_deepfool /= trials
     mccs_lo_deepfool /= trials
-
 
     accs_if_dt /= trials 
     fss_if_dt /= trials
@@ -369,7 +370,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
-
 
     np.savez(OUTPUT_FILE,
              accs_if_baseline = accs_if_baseline, 
