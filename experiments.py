@@ -67,6 +67,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     # we need to set up the k-fold evaluator 
     kf = KFold(n_splits=trials)
 
+    # need to intialize the outputs to zeros. not the most efficient way of doing this. 
     accs_if_baseline, fss_if_baseline, tprs_if_baseline, tnrs_if_baseline, mccs_if_baseline = 0., 0., 0., 0., 0.
     accs_svm_baseline, fss_svm_baseline, tprs_svm_baseline, tnrs_svm_baseline, mccs_svm_baseline = 0., 0., 0., 0., 0. 
     accs_ee_baseline, fss_ee_baseline, tprs_ee_baseline, tnrs_ee_baseline, mccs_ee_baseline = 0., 0., 0., 0., 0.
@@ -129,6 +130,9 @@ def run_experiment_exploratory(dataset:str='unswnb15',
             model.predict(X_adv_fgsm), model.predict(X_adv_pgd), model.predict(X_adv_dt)
 
 
+        # once each of the models have been learned, we need to get the performances then add them to the cumulative performance. 
+        # note this nees to be performed for each type of attack. the performances (minus the baseline) will be measured as detection 
+        # rates. 
         acc_if_baseline, fs_if_baseline, tpr_if_baseline, tnr_if_baseline, mcc_if_baseline = get_performance(y_true=y_te, y_hat=y_if)
         acc_svm_baseline, fs_svm_baseline, tpr_svm_baseline, tnr_svm_baseline, mcc_svm_baseline = get_performance(y_true=y_te, y_hat=y_svm)
         acc_ee_baseline, fs_ee_baseline, tpr_ee_baseline, tnr_ee_baseline, mcc_ee_baseline = get_performance(y_true=y_te, y_hat=y_ee)
@@ -303,7 +307,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     fss_lo_deepfool /= trials
     tprs_lo_deepfool /= trials
     tnrs_lo_deepfool /= trials
-    mccs_lo_deepfool /= trials
+    mccs_lo_deepfool /= trials 
 
     accs_if_dt /= trials 
     fss_if_dt /= trials
