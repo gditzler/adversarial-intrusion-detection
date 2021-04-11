@@ -33,7 +33,8 @@ def get_performance(y_true:np.ndarray,
     :param y_hat: numpy array with the predicted class labels [required]
     :param verbose: print stuff to the terminal [default = False]
     :param pos: label of the positive class
-    :param neg: label of the negative class 
+    :param neg: label of the negative class
+    :return tuple[acc, fs, tpr, tnr, mcc] 
     """    
     tp, tn, fp, fn = 0., 0., 0., 0.
     
