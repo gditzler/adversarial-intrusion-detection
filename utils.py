@@ -24,10 +24,16 @@ import numpy as np
 
 def get_performance(y_true:np.ndarray, 
                     y_hat:np.ndarray, 
-                    verbatim:bool=False,
+                    verbose:bool=False,
                     pos:float=-1.0, 
                     neg:float=1.0): 
     """Calculate the performance of a detector / classifier
+
+    :param y_true: numpy array with the true class labels [required]
+    :param y_hat: numpy array with the predicted class labels [required]
+    :param verbose: print stuff to the terminal [default = False]
+    :param pos: label of the positive class
+    :param neg: label of the negative class 
     """    
     tp, tn, fp, fn = 0., 0., 0., 0.
     
@@ -62,7 +68,7 @@ def get_performance(y_true:np.ndarray,
     else: 
         mcc = tp*tn/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
 
-    if verbatim: 
+    if verbose: 
         print(''.join([' Accuracy:  ', str(acc*100)]))
         print(''.join([' F-score:   ', str(fs*100)]))
         print(''.join([' TPR:       ', str(tpr*100)]))

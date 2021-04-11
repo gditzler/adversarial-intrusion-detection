@@ -102,7 +102,8 @@ def generate_adversarial_data(X_tr:np.ndarray,
     """
     if ctype == 'svc': 
         clfr = SVC(C=1.0, kernel='rbf')
-    elif ctype == 'gbc': 
+    elif ctype == 'gbc':
+        # currently does not work.  
         clfr = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
     elif ctype == 'dt': 
         clfr = DecisionTreeClassifier(criterion='gini', 
