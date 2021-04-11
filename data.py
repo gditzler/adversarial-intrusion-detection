@@ -47,7 +47,35 @@ def load_dataset(name:str='unswnb15'):
 
     if name == 'unswnb15': 
         X_tr, y_tr, X_te, y_te = load_unswnb()
+    elif name == 'nslkdd': 
+        X_tr, y_tr, X_te, y_te = load_nslkdd()
         
+    return X_tr, y_tr, X_te, y_te
+
+
+def load_nslkdd():
+    """Load the NSL-KDD dataset from the data/ folder. Note you need to download the data 
+    and add it to the folder. 
+
+    :return Four Numpy arrays with X_tr, y_tr, X_te and y_te
+    """
+
+    df_tr = pd.read_csv('data/KDDTrain+.arff')
+    df_te = pd.read_csv('data/KDDTest+.arff')
+    df_tr = df_tr.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
+    df_te = df_te.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
+
+    df_tr['target'][df_tr['target']=='normal'] = 0
+    df_tr['target'][df_tr['target']=='anomaly'] = 1
+
+    df_te['target'][df_te['target']=='normal'] = 0
+    df_te['target'][df_te['target']=='anomaly'] = 1
+
+    df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
+
+    X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
+    X_te, y_te = df_te.values[:,:-1], df_te['target'].values
+
     return X_tr, y_tr, X_te, y_te
 
 
