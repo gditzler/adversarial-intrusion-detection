@@ -31,25 +31,22 @@ if __name__ == '__main__':
     Xtr, ytr, Xte, yte = load_dataset(name='unswnb15')
 
     # TODO make X only malicous samples 
-    X = Xte[yte==-1]
-    ytr2 = ytr.copy()
-    ytr2[ytr2==1] = 0
-    ytr2[ytr2==-1] = 1
+    X = Xte[yte==1]
 
     # ctype=dt, atype=dt
-    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr2, X=X, ctype='dt', atype='dt')
+    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='dt', atype='dt')
     np.savez_compressed('data/full_data_unswnb15_dt_dt.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
 
     # ctype=mlp, atype=deepfool
-    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr2, X=X, ctype='mlp', atype='deepfool')
+    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='deepfool')
     np.savez_compressed('data/full_data_unswnb15_mlp_deepfool.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
 
     # ctype=mlp, atype=deepfool
-    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr2, X=X, ctype='mlp', atype='fgsm')
+    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='fgsm')
     np.savez_compressed('data/full_data_unswnb15_mlp_fgsm.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
 
     # ctype=mlp, atype=pgd
-    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr2, X=X, ctype='mlp', atype='pgd')
+    Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='pgd')
     np.savez_compressed('data/full_data_unswnb15_mlp_pgd.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
 
     # ctype=mlp, atype=cw takes a long time to run

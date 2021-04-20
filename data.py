@@ -97,13 +97,6 @@ def load_unswnb():
     X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
     X_te, y_te = df_te.values[:,:-1], df_te['target'].values
 
-    # change the labes; 1=normal; -1=maliicious
-    y_tr[y_tr==1] = -1
-    y_tr[y_tr==0] = 1
-    y_te[y_te==1] = -1
-    y_te[y_te==0] = 1
-
-
     return X_tr, y_tr, X_te, y_te
 
 
