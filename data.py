@@ -19,7 +19,7 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-import numpy as np 
+import numpy as np   
 import pandas as pd
 import tensorflow as tf
 
@@ -65,11 +65,13 @@ def load_nslkdd():
     df_tr = df_tr.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
     df_te = df_te.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
 
-    df_tr['target'][df_tr['target']=='normal'] = 0
-    df_tr['target'][df_tr['target']=='anomaly'] = 1
+    # change the name of the label column. this needs be be done if we are going to feed it into the 
+    # data frame standardizer 
+    df_tr['target'][df_tr['target']=='normal'] = 1
+    df_tr['target'][df_tr['target']=='anomaly'] = -1
 
-    df_te['target'][df_te['target']=='normal'] = 0
-    df_te['target'][df_te['target']=='anomaly'] = 1
+    df_te['target'][df_te['target']=='normal'] = 1
+    df_te['target'][df_te['target']=='anomaly'] = -1
 
     df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
 
@@ -94,6 +96,14 @@ def load_unswnb():
     df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
     X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
     X_te, y_te = df_te.values[:,:-1], df_te['target'].values
+
+    # change the labes; 1=normal; -1=maliicious
+    y_tr[y_tr==1] = -1
+    y_tr[y_tr==0] = 1
+    y_te[y_te==1] = -1
+    y_te[y_te==0] = 1
+
+
     return X_tr, y_tr, X_te, y_te
 
 

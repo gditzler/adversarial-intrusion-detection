@@ -23,7 +23,7 @@ import os
 import numpy as np 
 
 from sklearn.svm import OneClassSVM
-from sklearn.ensemble import IsolationForest, GradientBoostingClassifier
+from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.covariance import EllipticEnvelope
 from sklearn.model_selection import KFold
@@ -62,7 +62,14 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
     # load the pgd data 
     data = np.load(''.join(['data/full_data_', dataset, '_mlp_pgd.npz']))
-    _, _, _, _, X_adv_pgd = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml']  
+    _, _, _, _, X_adv_pgd = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
+
+    # change the labes; 1=normal; -1=maliicious
+    y_tr[y_tr==1] = -1
+    y_tr[y_tr==0] = 1
+    y_te[y_te==1] = -1
+    y_te[y_te==0] =  1
+
 
     # we need to set up the k-fold evaluator 
     kf = KFold(n_splits=trials)
@@ -105,7 +112,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         X_tr_n, y_tr_n = X_tr[train_index,:], y_tr[train_index]
 
         # set the normal data 
-        X_tr_n_normal = X_tr_n[y_tr_n == 0]
+        X_tr_n_normal = X_tr_n[y_tr_n == 1]
 
         # isolation forest 
         model = IsolationForest(contamination=contamination).fit(X_tr_n_normal)
