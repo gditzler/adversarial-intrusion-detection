@@ -42,10 +42,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     performances are ACC, TPR, TNR and MCC. The function returns nothing, but will write 
     files to 'outputs/'
 
-    param: dataset 
-    param: trials
-    param: type
-    param: verbose 
+    param: dataset  Dataset [unswnb15]; TODO - nslkdd
+    param: trials   Number of cross validation runs to perform 
+    param: type     Type of experiment to run [attack_all, attack_only]
+    param: verbose  Print stuff to the output?
     """
 
     if verbose: 
