@@ -31,7 +31,7 @@ if __name__ == '__main__':
     Xtr, ytr, Xte, yte = load_dataset(name='unswnb15')
 
     # TODO make X only malicous samples 
-    X = Xte[yte==1]
+    X = Xte #[yte==1]
 
     # ctype=dt, atype=dt
     Xaml = generate_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='dt', atype='dt')
