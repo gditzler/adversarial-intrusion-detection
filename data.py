@@ -104,20 +104,24 @@ def load_nslkdd():
 
     # change the name of the label column. this needs be be done if we are going to feed it into the 
     # data frame standardizer 
-    df_tr['target'][df_tr['target']=='normal'] = 1
-    df_tr['target'][df_tr['target']=='anomaly'] = -1
+    df_tr['target'][df_tr['target']=='normal'] = 0
+    df_tr['target'][df_tr['target']=='anomaly'] = 1
 
-    df_te['target'][df_te['target']=='normal'] = 1
-    df_te['target'][df_te['target']=='anomaly'] = -1
+    df_te['target'][df_te['target']=='normal'] = 0
+    df_te['target'][df_te['target']=='anomaly'] = 1
 
     df_tr, df_te = nslkddProtocolType(df_tr), nslkddProtocolType(df_te)
     df_tr, df_te = nslkddService(df_tr), nslkddService(df_te)
     df_tr, df_te = nslkddFlag(df_tr), nslkddFlag(df_te)
     
     df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
-
+    
     X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
     X_te, y_te = df_te.values[:,:-1], df_te['target'].values
+
+    # column has nans so we are going to get rid of it. 
+    X_tr = np.delete(X_tr, 19, 1)
+    X_te = np.delete(X_te, 19, 1)
 
     return X_tr, y_tr, X_te, y_te
 
