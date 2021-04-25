@@ -498,3 +498,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     )
 
     return None 
+
+
+def run_experiment_causative(dataset:str='unswnb15', 
+                               trials:int=10, 
+                               type:str='attacks_causative', 
+                               verbose:bool=False): 
+    return None 
