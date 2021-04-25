@@ -53,6 +53,43 @@ def load_dataset(name:str='unswnb15'):
     return X_tr, y_tr, X_te, y_te
 
 
+def nslkddProtocolType(df_set):
+    df_set['protocol_type'][df_set['protocol_type'] == 'tcp'] = 0
+    df_set['protocol_type'][df_set['protocol_type'] == 'udp'] = 1
+    df_set['protocol_type'][df_set['protocol_type'] == 'icmp'] = 2
+    return df_set
+
+
+def nslkddService(df_set:pd.DataFrame):
+    servicetypes = ['aol', 'auth', 'bgp', 'courier', 'csnet_ns', 'ctf',
+                    'daytime', 'discard', 'domain', 'domain_u', 'echo', 'eco_i',
+                    'ecr_i', 'efs', 'exec', 'finger', 'ftp', 'ftp_data',
+                    'gopher', 'harvest', 'hostnames', 'http', 'http_2784',
+                    'http_443', 'http_8001', 'imap4', 'IRC', 'iso_tsap',
+                    'klogin', 'kshell', 'ldap', 'link', 'login', 'mtp', 'name',
+                    'netbios_dgm', 'netbios_ns', 'netbios_ssn', 'netstat',
+                    'nnsp', 'nntp', 'ntp_u', 'other', 'pm_dump', 'pop_2',
+                    'pop_3', 'printer', 'private', 'red_i', 'remote_job',
+                    'rje', 'shell', 'smtp', 'sql_net', 'ssh', 'sunrpc',
+                    'supdup', 'systat', 'telnet', 'tftp_u', 'tim_i', 'time',
+                    'urh_i', 'urp_i', 'uucp', 'uucp_path', 'vmnet', 'whois',
+                    'X11', 'Z39_50'
+                    ]
+    for i, servicename in enumerate(servicetypes):
+        df_set['service'][df_set['service'] == servicename] = i
+    return df_set
+
+
+def nslkddFlag(df_set:pd.DataFrame):
+    flagtypes = ['OTH', 'REJ', 'RSTO', 'RSTOS0', 'RSTR', 'S0', 'S1', 'S2',
+                 'S3', 'SF', 'SH'
+                 ]
+    for i, flagname in enumerate(flagtypes):
+        df_set['flag'][df_set['flag'] == flagname] = i
+    return df_set
+
+
+
 def load_nslkdd():
     """Load the NSL-KDD dataset from the data/ folder. Note you need to download the data 
     and add it to the folder. 
@@ -60,8 +97,8 @@ def load_nslkdd():
     :return Four Numpy arrays with X_tr, y_tr, X_te and y_te
     """
 
-    df_tr = pd.read_csv('data/KDDTrain+.arff')
-    df_te = pd.read_csv('data/KDDTest+.arff')
+    df_tr = pd.read_csv('data/NSLKDD/train.csv')
+    df_te = pd.read_csv('data/NSLKDD/test.csv')
     df_tr = df_tr.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
     df_te = df_te.sample(frac=1).reset_index(drop=True).rename(columns={"class": "target"})
 
@@ -73,6 +110,10 @@ def load_nslkdd():
     df_te['target'][df_te['target']=='normal'] = 1
     df_te['target'][df_te['target']=='anomaly'] = -1
 
+    df_tr, df_te = nslkddProtocolType(df_tr), nslkddProtocolType(df_te)
+    df_tr, df_te = nslkddService(df_tr), nslkddService(df_te)
+    df_tr, df_te = nslkddFlag(df_tr), nslkddFlag(df_te)
+    
     df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
 
     X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
