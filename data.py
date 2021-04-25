@@ -203,7 +203,7 @@ def generate_adversarial_data(X_tr:np.ndarray,
 
         # Configure the model and start training
         clfr.compile(loss='categorical_crossentropy', optimizer='nadam', metrics=['accuracy'])
-        clfr.fit(X_train, Y_train, epochs=10, batch_size=250, verbose=1, validation_split=0.2)
+        clfr.fit(X_train, Y_train, epochs=10, batch_size=250, verbose=0, validation_split=0.2)
         clfr = KerasClassifier(model=clfr, clip_values=(-5, 5), use_logits=False)
     else: 
         raise ValueError('Unknown classifier was set to generate the adversarial attacks.')
