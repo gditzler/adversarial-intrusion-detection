@@ -19,7 +19,6 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-
 import numpy as np 
 import tensorflow as tf
 from data import load_dataset, generate_adversarial_data
@@ -35,6 +34,7 @@ if __name__ == '__main__':
 
     # -----------------------------------------------------------------------------------
     # prepare the adversarial / normal datasets with all data as being adversarial  
+    print('UNSWNB15: Generate all data as adversarial')
     X = Xte 
 
     # ctype=dt, atype=dt
@@ -56,6 +56,7 @@ if __name__ == '__main__':
 
     # -----------------------------------------------------------------------------------
     # prepare the adversarial / normal datasets with the cyber attack data as being adversarial 
+    print('UNSWNB15: Generate all cyber attack data as adversarial')
     X = Xte[yte==1]
 
     # ctype=dt, atype=dt
@@ -82,6 +83,7 @@ if __name__ == '__main__':
 
     # -----------------------------------------------------------------------------------
     # prepare the adversarial / normal datasets with all data as being adversarial  
+    print('NSLKDD: Generate all data as adversarial')
     X = Xte 
 
     # ctype=dt, atype=dt
@@ -103,6 +105,7 @@ if __name__ == '__main__':
 
     # -----------------------------------------------------------------------------------
     # prepare the adversarial / normal datasets with the cyber attack data as being adversarial 
+    print('NSLKDD: Generate all cyber attack data as adversarial')
     X = Xte[yte==1]
 
     # ctype=dt, atype=dt
