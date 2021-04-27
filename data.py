@@ -162,11 +162,11 @@ def standardize_df_off_tr(df_tr:pd.DataFrame, df_te:pd.DataFrame):
     return df_tr, df_te
 
 
-def generate_adversarial_data(X_tr:np.ndarray, 
-                              y_tr:np.ndarray, 
-                              X:np.ndarray, 
-                              ctype:str='svc', 
-                              atype:str='fgsm'):
+def generate_exploratory_adversarial_data(X_tr:np.ndarray, 
+                                          y_tr:np.ndarray, 
+                                          X:np.ndarray, 
+                                          ctype:str='svc', 
+                                          atype:str='fgsm'):
     """Generate adversarial data samples 
 
     :param X_tr: Dataset 
