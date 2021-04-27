@@ -33,6 +33,9 @@ from art.attacks.evasion.projected_gradient_descent.projected_gradient_descent i
 from art.estimators.classification import SklearnClassifier
 from art.estimators.classification import KerasClassifier
 from art.attacks.evasion.decision_tree_attack import DecisionTreeAttack
+from art.attacks.poisoning import PoisoningAttackSVM, PoisoningAttackCleanLabelBackdoor, PoisoningAttackBackdoor
+from art.attacks.poisoning.perturbations import add_pattern_bd, add_single_bd
+
 
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
@@ -167,7 +170,7 @@ def generate_exploratory_adversarial_data(X_tr:np.ndarray,
                                           X:np.ndarray, 
                                           ctype:str='svc', 
                                           atype:str='fgsm'):
-    """Generate adversarial data samples 
+    """Generate adversarial data samples for exploratory attacks 
 
     :param X_tr: Dataset 
     :param y_tr: Labels vector 
@@ -228,3 +231,42 @@ def generate_exploratory_adversarial_data(X_tr:np.ndarray,
         attack = DecisionTreeAttack(clfr)
     Xadv = attack.generate(x=X)
     return Xadv 
+
+
+def generate_causative_adversarial_data(X_tr:np.ndarray, 
+                                       y_tr:np.ndarray, 
+                                       X:np.ndarray, 
+                                       y:np.ndarray,
+                                       max_iter:int=10,
+                                       pp_poison:float=0.33,
+                                       atype:str='cleanlabel_pattern'):
+    """
+
+    :param atype: String that is the attack type ['cleanlabel_pattern', 'cleanlabel_single']
+    """
+
+    if atype == 'cleanlabel_pattern': 
+        clfr = SVC(C=1.0, kernel='rbf')
+        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
+        y_ohe = tf.keras.utils.to_categorical(y, 2)
+        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
+        clfr.fit(X_tr, ytr_ohe)
+        backdoor = PoisoningAttackBackdoor(add_pattern_bd)  
+        # target [1,0] class which is the normal data 
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
+        print(y_ohe)
+        Xadv, yadv = attack.poison(x=X, y=y_ohe) 
+    elif atype == 'cleanlabel_single': 
+        clfr = SVC(C=1.0, kernel='rbf')
+        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
+        y_ohe = tf.keras.utils.to_categorical(y, 2)
+        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
+        clfr.fit(X_tr, ytr_ohe)
+        backdoor = PoisoningAttackBackdoor(add_single_bd)
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
+        print(y_ohe)
+        Xadv, yadv = attack.poison(x=X, y=y_ohe) 
+    else: 
+        raise ValueError('An unknown attack was specified.')
+
+    return Xadv, yadv 
