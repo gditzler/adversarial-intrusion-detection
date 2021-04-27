@@ -76,11 +76,22 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_mlp_pgd.npz']), allow_pickle=True)
     _, _, _, _, X_adv_pgd = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
 
-    # change the labes; 1=normal; -1=maliicious
-    y_tr[y_tr==1] = -1
-    y_tr[y_tr==0] = 1
-    y_te[y_te==1] = -1
-    y_te[y_te==0] =  1
+    
+
+    if type == 'attacks_all': 
+        # change the labes; 1=normal; -1=maliicious
+        y_tr[y_tr==1] = -1
+        y_tr[y_tr==0] = 1
+        y_te[y_te==1] = -1
+        y_te[y_te==0] =  1
+        y_aml = y_te
+    else: 
+        # change the labes; 1=normal; -1=maliicious
+        y_tr[y_tr==1] = -1
+        y_tr[y_tr==0] = 1
+        y_te[y_te==1] = -1
+        y_te[y_te==0] =  1
+        y_aml = -np.ones(len(X_adv_pgd))
 
 
     # we need to set up the k-fold evaluator 
@@ -178,10 +189,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         tnrs_lo_baseline += tnr_lo_baseline
         mccs_lo_baseline += mcc_lo_baseline
         
-        acc_if_deepfool, fs_if_deepfool, tpr_if_deepfool, tnr_if_deepfool, mcc_if_deepfool = get_performance(y_true=y_te, y_hat=y_if_deepfool)
-        acc_svm_deepfool, fs_svm_deepfool, tpr_svm_deepfool, tnr_svm_deepfool, mcc_svm_deepfool = get_performance(y_true=y_te, y_hat=y_svm_deepfool)
-        acc_ee_deepfool, fs_ee_deepfool, tpr_ee_deepfool, tnr_ee_deepfool, mcc_ee_deepfool = get_performance(y_true=y_te, y_hat=y_ee_deepfool)
-        acc_lo_deepfool, fs_lo_deepfool, tpr_lo_deepfool, tnr_lo_deepfool, mcc_lo_deepfool = get_performance(y_true=y_te, y_hat=y_lo_deepfool)
+        acc_if_deepfool, fs_if_deepfool, tpr_if_deepfool, tnr_if_deepfool, mcc_if_deepfool = get_performance(y_true=y_aml, y_hat=y_if_deepfool)
+        acc_svm_deepfool, fs_svm_deepfool, tpr_svm_deepfool, tnr_svm_deepfool, mcc_svm_deepfool = get_performance(y_true=y_aml, y_hat=y_svm_deepfool)
+        acc_ee_deepfool, fs_ee_deepfool, tpr_ee_deepfool, tnr_ee_deepfool, mcc_ee_deepfool = get_performance(y_true=y_aml, y_hat=y_ee_deepfool)
+        acc_lo_deepfool, fs_lo_deepfool, tpr_lo_deepfool, tnr_lo_deepfool, mcc_lo_deepfool = get_performance(y_true=y_aml, y_hat=y_lo_deepfool)
 
         accs_if_deepfool += acc_if_deepfool 
         fss_if_deepfool += fs_if_deepfool 
@@ -205,10 +216,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         mccs_lo_deepfool += mcc_lo_deepfool
 
 
-        acc_if_fgsm, fs_if_fgsm, tpr_if_fgsm, tnr_if_fgsm, mcc_if_fgsm = get_performance(y_true=y_te, y_hat=y_if_fgsm)
-        acc_svm_fgsm, fs_svm_fgsm, tpr_svm_fgsm, tnr_svm_fgsm, mcc_svm_fgsm = get_performance(y_true=y_te, y_hat=y_svm_fgsm)
-        acc_ee_fgsm, fs_ee_fgsm, tpr_ee_fgsm, tnr_ee_fgsm, mcc_ee_fgsm = get_performance(y_true=y_te, y_hat=y_ee_fgsm)
-        acc_lo_fgsm, fs_lo_fgsm, tpr_lo_fgsm, tnr_lo_fgsm, mcc_lo_fgsm = get_performance(y_true=y_te, y_hat=y_lo_fgsm)
+        acc_if_fgsm, fs_if_fgsm, tpr_if_fgsm, tnr_if_fgsm, mcc_if_fgsm = get_performance(y_true=y_aml, y_hat=y_if_fgsm)
+        acc_svm_fgsm, fs_svm_fgsm, tpr_svm_fgsm, tnr_svm_fgsm, mcc_svm_fgsm = get_performance(y_true=y_aml, y_hat=y_svm_fgsm)
+        acc_ee_fgsm, fs_ee_fgsm, tpr_ee_fgsm, tnr_ee_fgsm, mcc_ee_fgsm = get_performance(y_true=y_aml, y_hat=y_ee_fgsm)
+        acc_lo_fgsm, fs_lo_fgsm, tpr_lo_fgsm, tnr_lo_fgsm, mcc_lo_fgsm = get_performance(y_true=y_aml, y_hat=y_lo_fgsm)
 
         accs_if_fgsm += acc_if_fgsm 
         fss_if_fgsm += fs_if_fgsm 
@@ -232,10 +243,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         mccs_lo_fgsm += mcc_lo_fgsm
 
 
-        acc_if_pgd, fs_if_pgd, tpr_if_pgd, tnr_if_pgd, mcc_if_pgd = get_performance(y_true=y_te, y_hat=y_if_pgd)
-        acc_svm_pgd, fs_svm_pgd, tpr_svm_pgd, tnr_svm_pgd, mcc_svm_pgd = get_performance(y_true=y_te, y_hat=y_svm_pgd)
-        acc_ee_pgd, fs_ee_pgd, tpr_ee_pgd, tnr_ee_pgd, mcc_ee_pgd = get_performance(y_true=y_te, y_hat=y_ee_pgd)
-        acc_lo_pgd, fs_lo_pgd, tpr_lo_pgd, tnr_lo_pgd, mcc_lo_pgd = get_performance(y_true=y_te, y_hat=y_lo_pgd)
+        acc_if_pgd, fs_if_pgd, tpr_if_pgd, tnr_if_pgd, mcc_if_pgd = get_performance(y_true=y_aml, y_hat=y_if_pgd)
+        acc_svm_pgd, fs_svm_pgd, tpr_svm_pgd, tnr_svm_pgd, mcc_svm_pgd = get_performance(y_true=y_aml, y_hat=y_svm_pgd)
+        acc_ee_pgd, fs_ee_pgd, tpr_ee_pgd, tnr_ee_pgd, mcc_ee_pgd = get_performance(y_true=y_aml, y_hat=y_ee_pgd)
+        acc_lo_pgd, fs_lo_pgd, tpr_lo_pgd, tnr_lo_pgd, mcc_lo_pgd = get_performance(y_true=y_aml, y_hat=y_lo_pgd)
 
         accs_if_pgd += acc_if_pgd 
         fss_if_pgd += fs_if_pgd 
@@ -258,10 +269,10 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         tnrs_lo_pgd += tnr_lo_pgd
         mccs_lo_pgd += mcc_lo_pgd
 
-        acc_if_dt, fs_if_dt, tpr_if_dt, tnr_if_dt, mcc_if_dt = get_performance(y_true=y_te, y_hat=y_if_dt)
-        acc_svm_dt, fs_svm_dt, tpr_svm_dt, tnr_svm_dt, mcc_svm_dt = get_performance(y_true=y_te, y_hat=y_svm_dt)
-        acc_ee_dt, fs_ee_dt, tpr_ee_dt, tnr_ee_dt, mcc_ee_dt = get_performance(y_true=y_te, y_hat=y_ee_dt)
-        acc_lo_dt, fs_lo_dt, tpr_lo_dt, tnr_lo_dt, mcc_lo_dt = get_performance(y_true=y_te, y_hat=y_lo_dt)
+        acc_if_dt, fs_if_dt, tpr_if_dt, tnr_if_dt, mcc_if_dt = get_performance(y_true=y_aml, y_hat=y_if_dt)
+        acc_svm_dt, fs_svm_dt, tpr_svm_dt, tnr_svm_dt, mcc_svm_dt = get_performance(y_true=y_aml, y_hat=y_svm_dt)
+        acc_ee_dt, fs_ee_dt, tpr_ee_dt, tnr_ee_dt, mcc_ee_dt = get_performance(y_true=y_aml, y_hat=y_ee_dt)
+        acc_lo_dt, fs_lo_dt, tpr_lo_dt, tnr_lo_dt, mcc_lo_dt = get_performance(y_true=y_aml, y_hat=y_lo_dt)
 
         accs_if_dt += acc_if_dt 
         fss_if_dt += fs_if_dt 
