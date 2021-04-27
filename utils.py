@@ -66,6 +66,6 @@ def get_performance(y_true:np.ndarray,
     if tp+fp==0 or tp+fn==0 or tn+fp==0 or tn+fn==0: 
         mcc = 0.
     else: 
-        mcc = tp*tn/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
+        mcc = (tp*tn-fp*fn)/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
 
     return acc, fs, tpr, tnr, mcc
