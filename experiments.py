@@ -42,7 +42,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     performances are ACC, TPR, TNR and MCC. The function returns nothing, but will write 
     files to 'outputs/'
 
-    param: dataset  Dataset [unswnb15]; TODO - nslkdd
+    param: dataset  Dataset [unswnb15, nslkdd];
     param: trials   Number of cross validation runs to perform 
     param: type     Type of experiment to run [attack_all, attack_only]
     param: verbose  Print stuff to the output?
@@ -85,13 +85,15 @@ def run_experiment_exploratory(dataset:str='unswnb15',
         y_te[y_te==1] = -1
         y_te[y_te==0] =  1
         y_aml = y_te
-    else: 
+    elif type == 'attacks_only': 
         # change the labes; 1=normal; -1=maliicious
         y_tr[y_tr==1] = -1
         y_tr[y_tr==0] = 1
         y_te[y_te==1] = -1
         y_te[y_te==0] =  1
         y_aml = -np.ones(len(X_adv_pgd))
+    else: 
+        raise ValueError('Unknown type: attacks_only or attacks_all')
 
 
     # we need to set up the k-fold evaluator 
