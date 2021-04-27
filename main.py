@@ -20,8 +20,6 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 
-import os
-
 from experiments import run_experiment_exploratory
 
 
