@@ -42,7 +42,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     performances are ACC, TPR, TNR and MCC. The function returns nothing, but will write 
     files to 'outputs/'
 
-    param: dataset  Dataset [unswnb15, nslkdd];
+    param: dataset  Dataset [unswnb15, nslkdd]
     param: trials   Number of cross validation runs to perform 
     param: type     Type of experiment to run [attack_all, attack_only]
     param: verbose  Print stuff to the output?
@@ -64,7 +64,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_dt_dt.npz']), allow_pickle=True)
     X_tr, y_tr, X_te, y_te, X_adv_dt = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
     
-    # lad the deepfool data 
+    # load the deepfool data 
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_mlp_deepfool.npz']), allow_pickle=True)
     _, _, _, _, X_adv_deepfool = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml']
 
@@ -79,14 +79,14 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     
 
     if type == 'attacks_all': 
-        # change the labes; 1=normal; -1=maliicious
+        # change the labels; 1=normal; -1=maliicious
         y_tr[y_tr==1] = -1
         y_tr[y_tr==0] = 1
         y_te[y_te==1] = -1
         y_te[y_te==0] =  1
         y_aml = y_te
     elif type == 'attacks_only': 
-        # change the labes; 1=normal; -1=maliicious
+        # change the labels; 1=normal; -1=maliicious
         y_tr[y_tr==1] = -1
         y_tr[y_tr==0] = 1
         y_te[y_te==1] = -1
@@ -517,4 +517,6 @@ def run_experiment_causative(dataset:str='unswnb15',
                                trials:int=10, 
                                type:str='attacks_causative', 
                                verbose:bool=False): 
+    """TBD
+    """
     return None 

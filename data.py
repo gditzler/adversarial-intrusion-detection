@@ -264,8 +264,21 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_single_bd)
         attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
-        print(y_ohe)
-        Xadv, yadv = attack.poison(x=X, y=y_ohe) 
+        Xadv, yadv = attack.poison(x=X, y=y_ohe)
+    elif atype == 'svm':
+        n = int(.8*len(y_tr))
+        clfr = SVC(C=1.0, kernel='rbf')
+        ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
+        y_ohe = tf.keras.utils.to_categorical(y, 2)
+        clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
+        attack = PoisoningAttackSVM(clfr, 0.1, 
+                                    0.5, 
+                                    X_tr[:n], 
+                                    ytr_ohe[:n], 
+                                    X_tr[n:], 
+                                    ytr_ohe[n:], 
+                                    25)
+        Xadv, yadv = attack.poison(X, y=y_ohe)
     else: 
         raise ValueError('An unknown attack was specified.')
 
