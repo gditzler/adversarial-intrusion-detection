@@ -48,26 +48,26 @@ if __name__ == '__main__':
     np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_single.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
     
     
-    Xtr, ytr, Xte, yte = load_dataset(name='unswnb15')
+    # Xtr, ytr, Xte, yte = load_dataset(name='unswnb15')
 
-    X = Xtr #[:100]
-    y = ytr #[:100]
+    # X = Xtr #[:100]
+    # y = ytr #[:100]
 
-    Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr, 
-                                                     y_tr=ytr, 
-                                                     X=X, 
-                                                     y=y,
-                                                     max_iter=5,
-                                                     pp_poison=0.2,
-                                                     atype='cleanlabel_pattern')
-    np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_pattern.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
+    # Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr, 
+    #                                                  y_tr=ytr, 
+    #                                                  X=X, 
+    #                                                  y=y,
+    #                                                  max_iter=5,
+    #                                                  pp_poison=0.2,
+    #                                                  atype='cleanlabel_pattern')
+    # np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_pattern.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
 
-    Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr, 
-                                                     y_tr=ytr, 
-                                                     X=X, 
-                                                     y=y,
-                                                     max_iter=5,
-                                                     pp_poison=0.2,
-                                                     atype='cleanlabel_single')
-    np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_single.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
+    # Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr, 
+    #                                                  y_tr=ytr, 
+    #                                                  X=X, 
+    #                                                  y=y,
+    #                                                  max_iter=5,
+    #                                                  pp_poison=0.2,
+    #                                                  atype='cleanlabel_single')
+    # np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_single.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
 
