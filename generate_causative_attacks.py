@@ -34,7 +34,7 @@ if __name__ == '__main__':
                                                      X=X, 
                                                      y=y,
                                                      max_iter=5,
-                                                     pp_poison=0.2,
+                                                     pp_poison=0.8,
                                                      atype='cleanlabel_pattern')
     np.savez_compressed('data/causative/full_data_nslkdd_cleanlabel_pattern.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
                                                      X=X, 
                                                      y=y,
                                                      max_iter=5,
-                                                     pp_poison=0.2,
+                                                     pp_poison=0.8,
                                                      atype='cleanlabel_single')
     np.savez_compressed('data/causative/full_data_unswnb15_cleanlabel_single.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
     
