@@ -26,8 +26,8 @@ if __name__ == '__main__':
 
     Xtr, ytr, Xte, yte = load_dataset(name='nslkdd')
     n = int(.8*len(ytr))
-    X = Xtr[n:]
-    y = ytr[n:]
+    X = Xtr[100:]
+    y = ytr[100:]
 
     Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr[:n], 
                                                      y_tr=ytr[:n], 

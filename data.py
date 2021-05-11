@@ -273,11 +273,13 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
         attack = PoisoningAttackSVM(clfr, 0.1, 
                                     0.5, 
-                                    X_tr[:n], 
-                                    ytr_ohe[:n], 
-                                    X_tr[n:], 
-                                    ytr_ohe[n:], 
+                                    X_tr[:n].astype(np.float64), 
+                                    ytr_ohe[:n].astype(np.float64), 
+                                    X_tr[n:].astype(np.float64), 
+                                    ytr_ohe[n:].astype(np.float64), 
                                     25)
+        X = X.astype(np.float64)
+        y_ohe = y_ohe.astype(np.float64)
         Xadv, yadv = attack.poison(X, y=y_ohe)
     else: 
         raise ValueError('An unknown attack was specified.')
