@@ -278,6 +278,7 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
                                     X_tr[n:], 
                                     ytr_ohe[n:], 
                                     25)
+        y_ohe = np.ones(y_ohe.shape) - y_ohe
         Xadv, yadv = attack.poison(X, y=y_ohe)
     else: 
         raise ValueError('An unknown attack was specified.')
