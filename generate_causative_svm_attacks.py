@@ -25,9 +25,11 @@ from data import generate_causative_adversarial_data, load_dataset
 if __name__ == '__main__': 
 
     Xtr, ytr, Xte, yte = load_dataset(name='nslkdd')
-    n = int(.8*len(ytr))
-    X = Xtr[100:]
-    y = ytr[100:]
+    # n = int(.8*len(ytr))
+    n = np.random.randint(0, len(ytr), 1000)
+    m = np.random.randint(0, len(ytr), 1000) 
+    X = Xtr[m]
+    y = ytr[m]
 
     Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr[:n], 
                                                      y_tr=ytr[:n], 
