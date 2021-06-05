@@ -255,7 +255,7 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         # target [1,0] class which is the normal data 
         attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
         print(y_ohe)
-        Xadv, yadv = attack.poison(x=X, y=y_ohe) 
+        Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'cleanlabel_single': 
         clfr = SVC(C=1.0, kernel='rbf')
         ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
@@ -264,7 +264,7 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_single_bd)
         attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
-        Xadv, yadv = attack.poison(x=X, y=y_ohe)
+        Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'svm':
         n = int(.8*len(y_tr))
         clfr = SVC(C=1.0, kernel='rbf')
