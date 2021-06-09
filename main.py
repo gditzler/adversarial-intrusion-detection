@@ -24,14 +24,6 @@ from experiments import run_experiment_exploratory
 
 
 if __name__ == '__main__': 
-    run_experiment_exploratory(dataset='unswnb15',
-                               trials=5, 
-                               type='attacks_all', 
-                               verbose=True)
-    run_experiment_exploratory(dataset='unswnb15',
-                               trials=5, 
-                               type='attacks_only', 
-                               verbose=True) 
 
     run_experiment_exploratory(dataset='nslkdd',
                                trials=5, 

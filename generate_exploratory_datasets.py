@@ -29,55 +29,6 @@ tf.compat.v1.disable_eager_execution()
 if __name__ == '__main__': 
     
     # -----------------------------------------------------------------------------------
-    # GENERATE THE DATA FOR THE UNSWNB15 DATASET  
-    # Xtr, ytr, Xte, yte = load_dataset(name='unswnb15')
-
-    # # -----------------------------------------------------------------------------------
-    # # prepare the adversarial / normal datasets with all data as being adversarial  
-    # print('UNSWNB15: Generate all data as adversarial')
-    # X = Xte 
-
-    # # ctype=dt, atype=dt
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='dt', atype='dt')
-    # np.savez_compressed('data/attacks_all/full_data_unswnb15_dt_dt.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=deepfool
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='deepfool')
-    # np.savez_compressed('data/attacks_all/full_data_unswnb15_mlp_deepfool.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=fgsm
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='fgsm')
-    # np.savez_compressed('data/attacks_all/full_data_unswnb15_mlp_fgsm.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=pgd
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='pgd')
-    # np.savez_compressed('data/attacks_all/full_data_unswnb15_mlp_pgd.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-
-    # # -----------------------------------------------------------------------------------
-    # # prepare the adversarial / normal datasets with the cyber attack data as being adversarial 
-    # print('UNSWNB15: Generate all cyber attack data as adversarial')
-    # X = Xte[yte==1]
-
-    # # ctype=dt, atype=dt
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='dt', atype='dt')
-    # np.savez_compressed('data/attacks_only/full_data_unswnb15_dt_dt.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=deepfool
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='deepfool')
-    # np.savez_compressed('data/attacks_only/full_data_unswnb15_mlp_deepfool.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=fgsm
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='fgsm')
-    # np.savez_compressed('data/attacks_only/full_data_unswnb15_mlp_fgsm.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-    # # ctype=mlp, atype=pgd
-    # Xaml = generate_exploratory_adversarial_data(X_tr=Xtr, y_tr=ytr, X=X, ctype='mlp', atype='pgd')
-    # np.savez_compressed('data/attacks_only/full_data_unswnb15_mlp_pgd.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xaml)
-
-
-
-    # -----------------------------------------------------------------------------------
     # GENERATE THE DATA FOR THE NSLKDD DATASET  
     Xtr, ytr, Xte, yte = load_dataset(name='nslkdd')
 
