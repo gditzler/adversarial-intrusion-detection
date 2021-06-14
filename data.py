@@ -253,7 +253,7 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_pattern_bd)  
         # target [1,0] class which is the normal data 
-        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, np.array([1,0]), pp_poison=pp_poison, max_iter=max_iter)
         print(y_ohe)
         Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'cleanlabel_single': 
@@ -263,7 +263,7 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_single_bd)
-        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, np.array([1,0]), pp_poison=pp_poison, max_iter=max_iter)
         Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'svm':
         n = int(.8*len(y_tr))
