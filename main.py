@@ -35,7 +35,15 @@ if __name__ == '__main__':
                                verbose=True) 
     '''
     run_experiment_causative(dataset='nslkdd', 
-                             trials=10, 
+                             trials=5, 
+                             ppoison=0.05, 
+                             verbose=True)
+    run_experiment_causative(dataset='nslkdd', 
+                             trials=5, 
                              ppoison=0.1, 
+                             verbose=True)
+    run_experiment_causative(dataset='nslkdd', 
+                             trials=5, 
+                             ppoison=0.15, 
                              verbose=True)
     print('Done')
