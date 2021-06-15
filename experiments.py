@@ -515,8 +515,9 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
 
 def run_experiment_causative(dataset:str='nslkdd', 
-                               trials:int=10, 
-                               verbose:bool=False): 
+                             trials:int=10, 
+                             ppoison:float=0.1, 
+                             verbose:bool=False): 
     """run the causative experiments 
     """
     
@@ -528,19 +529,19 @@ def run_experiment_causative(dataset:str='nslkdd',
     contamination = .05
     degree = 3
 
-    OUTPUT_FILE = ''.join(['outputs/results_ids_', type, '_', dataset, '.npz'])
+    OUTPUT_FILE = ''.join(['outputs/results_ids_causative_', dataset,'_pp', str(int(100*ppoison)), '.npz'])
 
     # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
     # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
     # labels of y_te are the initial labels of the adversarial data. 
     data = np.load(''.join(['data/causative/full_data_', dataset, '_cleanlabel_pattern.npz']), allow_pickle=True)
-    X_tr, y_tr, X_te, y_te, X_adv_pattern, y_adv_pattern  = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'], data['yaml'] 
+    X_tr, y_tr, X_te, y_te, X_adv_pattern, y_adv_pattern  = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'], np.argmax(data['yaml'], axis=1) 
     
     data = np.load(''.join(['data/causative/full_data_', dataset, '_cleanlabel_single.npz']), allow_pickle=True)
-    X_adv_single, y_adv_single = data['Xaml'], data['yaml'] 
+    X_adv_single, y_adv_single = data['Xaml'], np.argmax(data['yaml'], axis=1) 
     
     data = np.load(''.join(['data/causative/full_data_', dataset, '_svc.npz']), allow_pickle=True)
-    X_adv_svc, y_adv_svc = data['Xaml'], data['yaml'] 
+    X_adv_svc, y_adv_svc = data['Xaml'], np.argmax(data['yaml'], axis=1) 
 
 
     # need to intialize the outputs to zeros. not the most efficient way of doing this. 
@@ -575,11 +576,24 @@ def run_experiment_causative(dataset:str='nslkdd',
         # use the testing data since we are not going to learn a classifier. 
         X_tr_n, y_tr_n = X_tr[train_index,:], y_tr[train_index]
 
+        
         # set the normal data 
         X_tr_n_normal = X_tr_n[y_tr_n == 1]
-        X_tr_n_pattern = np.concatenate((X_tr_n_normal, X_adv_pattern[y_adv_pattern==0]), axis=0)
-        X_tr_n_single = np.concatenate((X_tr_n_normal, X_adv_single[y_adv_single==0]), axis=0)
-        X_tr_n_svc = np.concatenate((X_tr_n_normal, X_adv_svc[y_adv_svc==0]), axis=0)
+        
+        # split out the adversarial data 
+        m = int(len(X_tr_n_normal)/(1 - ppoison)) - len(X_tr_n_normal)
+
+        Xa = X_adv_pattern[y_adv_pattern==0]
+        Xa = Xa[np.random.randint(0, len(Xa), m)]
+        X_tr_n_pattern = np.concatenate((X_tr_n_normal, Xa), axis=0)
+        
+        Xa = X_adv_single[y_adv_single==0]
+        Xa = Xa[np.random.randint(0, len(Xa), m)]
+        X_tr_n_single = np.concatenate((X_tr_n_normal, Xa), axis=0)
+        
+        Xa = X_adv_svc[y_adv_svc==0]
+        Xa = Xa[np.random.randint(0, len(Xa), m)]
+        X_tr_n_svc = np.concatenate((X_tr_n_normal, Xa), axis=0)
 
         # isolation forest 
         model_n = IsolationForest(contamination=contamination).fit(X_tr_n_normal)

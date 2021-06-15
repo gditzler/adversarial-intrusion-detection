@@ -20,11 +20,11 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 
-from experiments import run_experiment_exploratory
+from experiments import run_experiment_exploratory, run_experiment_causative
 
 
 if __name__ == '__main__': 
-
+    '''
     run_experiment_exploratory(dataset='nslkdd',
                                trials=5, 
                                type='attacks_all', 
@@ -33,4 +33,9 @@ if __name__ == '__main__':
                                trials=5, 
                                type='attacks_only', 
                                verbose=True) 
+    '''
+    run_experiment_causative(dataset='nslkdd', 
+                             trials=10, 
+                             ppoison=0.1, 
+                             verbose=True)
     print('Done')
