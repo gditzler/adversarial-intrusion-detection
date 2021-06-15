@@ -294,3 +294,4 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         raise ValueError('An unknown attack was specified.')
 
     return Xadv, yadv 
+    
