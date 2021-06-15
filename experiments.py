@@ -541,6 +541,29 @@ def run_experiment_causative(dataset:str='nslkdd',
     data = np.load(''.join(['data/causative/full_data_', dataset, '_svc.npz']), allow_pickle=True)
     X_adv_svc, y_adv_svc = data['Xaml'], data['yaml'] 
 
+
+    # need to intialize the outputs to zeros. not the most efficient way of doing this. 
+    accs_if, fss_if, tprs_if, tnrs_if, mccs_if= 0., 0., 0., 0., 0.
+    accs_svm, fss_svm, tprs_svm, tnrs_svm, mccs_svm= 0., 0., 0., 0., 0. 
+    accs_ee, fss_ee, tprs_ee, tnrs_ee, mccs_ee= 0., 0., 0., 0., 0.
+    accs_lo, fss_lo, tprs_lo, tnrs_lo, mccs_lo= 0., 0., 0., 0., 0.
+
+    accs_if_pattern, fss_if_pattern, tprs_if_pattern, tnrs_if_pattern, mccs_if_pattern= 0., 0., 0., 0., 0.
+    accs_svm_pattern, fss_svm_pattern, tprs_svm_pattern, tnrs_svm_pattern, mccs_svm_pattern= 0., 0., 0., 0., 0. 
+    accs_ee_pattern, fss_ee_pattern, tprs_ee_pattern, tnrs_ee_pattern, mccs_ee_pattern= 0., 0., 0., 0., 0.
+    accs_lo_pattern, fss_lo_pattern, tprs_lo_pattern, tnrs_lo_pattern, mccs_lo_pattern= 0., 0., 0., 0., 0.
+
+    accs_if_single, fss_if_single, tprs_if_single, tnrs_if_single, mccs_if_single= 0., 0., 0., 0., 0.
+    accs_svm_single, fss_svm_single, tprs_svm_single, tnrs_svm_single, mccs_svm_single= 0., 0., 0., 0., 0. 
+    accs_ee_single, fss_ee_single, tprs_ee_single, tnrs_ee_single, mccs_ee_single= 0., 0., 0., 0., 0.
+    accs_lo_single, fss_lo_single, tprs_lo_single, tnrs_lo_single, mccs_lo_single= 0., 0., 0., 0., 0.
+
+    accs_if_svc, fss_if_svc, tprs_if_svc, tnrs_if_svc, mccs_if_svc= 0., 0., 0., 0., 0.
+    accs_svm_svc, fss_svm_svc, tprs_svm_svc, tnrs_svm_svc, mccs_svm_svc= 0., 0., 0., 0., 0. 
+    accs_ee_svc, fss_ee_svc, tprs_ee_svc, tnrs_ee_svc, mccs_ee_svc= 0., 0., 0., 0., 0.
+    accs_lo_svc, fss_lo_svc, tprs_lo_svc, tnrs_lo_svc, mccs_lo_svc= 0., 0., 0., 0., 0.
+
+
     for t in range(trials):
         if verbose: 
             print(''.join(['   > Running ', str(t+1), ' of ', str(trials)]))
@@ -595,6 +618,34 @@ def run_experiment_causative(dataset:str='nslkdd',
         model_a_single.novelty = True
         y_lo, y_lo_pattern, y_lo_single, y_lo_svc = model_n.predict(X_te), model_a_pattern.predict(X_te), \
             model_a_single.predict(X_te), model_a_svc.predict(X_te)
+
+        # get the prediction rates 
+        acc_if, fs_if, tpr_if, tnr_if, mcc_if = get_performance(y_true=y_te, y_hat=y_if)
+        acc_if_pattern, fs_if_pattern, tpr_if_pattern, tnr_if_pattern, mcc_if_pattern = get_performance(y_true=y_te, y_hat=y_if_pattern)
+        acc_if_single, fs_if_single, tpr_if_single, tnr_if_single, mcc_if_single = get_performance(y_true=y_te, y_hat=y_if_single)
+        acc_if_svc, fs_if_svc, tpr_if_svc, tnr_if_svc, mcc_if_svc = get_performance(y_true=y_te, y_hat=y_if_svc)
+
+        acc_svm, fs_svm, tpr_svm, tnr_svm, mcc_svm = get_performance(y_true=y_te, y_hat=y_if)
+        acc_svm_pattern, fs_svm_pattern, tpr_svm_pattern, tnr_svm_pattern, mcc_svm_pattern = get_performance(y_true=y_te, y_hat=y_svm_pattern)
+        acc_svm_single, fs_svm_single, tpr_svm_single, tnr_svm_single, mcc_svm_single = get_performance(y_true=y_te, y_hat=y_svm_single)
+        acc_svm_svc, fs_svm_svc, tpr_svm_svc, tnr_svm_svc, mcc_svm_svc = get_performance(y_true=y_te, y_hat=y_svm_svc)
+
+        acc_ee, fs_ee, tpr_ee, tnr_ee, mcc_ee = get_performance(y_true=y_te, y_hat=y_ee)
+        acc_ee_pattern, fs_ee_pattern, tpr_ee_pattern, tnr_ee_pattern, mcc_ee_pattern = get_performance(y_true=y_te, y_hat=y_ee_pattern)
+        acc_ee_single, fs_ee_single, tpr_ee_single, tnr_ee_single, mcc_ee_single = get_performance(y_true=y_te, y_hat=y_ee_single)
+        acc_ee_svc, fs_ee_svc, tpr_ee_svc, tnr_ee_svc, mcc_ee_svc = get_performance(y_true=y_te, y_hat=y_ee_svc)
+
+
+        acc_lo, fs_if, tpr_lo, tnr_lo, mcc_lo = get_performance(y_true=y_te, y_hat=y_if)
+        acc_lo_pattern, fs_lo_pattern, tpr_lo_pattern, tnr_lo_pattern, mcc_lo_pattern = get_performance(y_true=y_te, y_hat=y_lo_pattern)
+        acc_lo_single, fs_lo_single, tpr_lo_single, tnr_lo_single, mcc_lo_single = get_performance(y_true=y_te, y_hat=y_lo_single)
+        acc_lo_svc, fs_lo_svc, tpr_lo_svc, tnr_lo_svc, mcc_lo_svc = get_performance(y_true=y_te, y_hat=y_lo_svc)
+
+
+
+
+
+
 
 
     
