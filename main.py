@@ -24,7 +24,6 @@ from experiments import run_experiment_exploratory, run_experiment_causative
 
 
 if __name__ == '__main__': 
-    '''
     run_experiment_exploratory(dataset='nslkdd',
                                trials=5, 
                                type='attacks_all', 
@@ -46,4 +45,5 @@ if __name__ == '__main__':
                              trials=5, 
                              ppoison=0.15, 
                              verbose=True)
+    '''
     print('Done')
