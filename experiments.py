@@ -513,10 +513,89 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     return None 
 
 
-def run_experiment_causative(dataset:str='unswnb15', 
+def run_experiment_causative(dataset:str='nslkdd', 
                                trials:int=10, 
-                               type:str='attacks_causative', 
                                verbose:bool=False): 
-    """TBD
+    """run the causative experiments 
     """
+    
+    if verbose: 
+        print(''.join(['Dataset: ', dataset]))
+    
+    # detection algorithm specific parameters 
+    support_fraction = .5
+    contamination = .05
+    degree = 3
+
+    OUTPUT_FILE = ''.join(['outputs/results_ids_', type, '_', dataset, '.npz'])
+
+    # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
+    # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
+    # labels of y_te are the initial labels of the adversarial data. 
+    data = np.load(''.join(['data/causative/full_data_', dataset, '_cleanlabel_pattern.npz']), allow_pickle=True)
+    X_tr, y_tr, X_te, y_te, X_adv_pattern, y_adv_pattern  = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'], data['yaml'] 
+    
+    data = np.load(''.join(['data/causative/full_data_', dataset, '_cleanlabel_single.npz']), allow_pickle=True)
+    X_adv_single, y_adv_single = data['Xaml'], data['yaml'] 
+    
+    data = np.load(''.join(['data/causative/full_data_', dataset, '_svc.npz']), allow_pickle=True)
+    X_adv_svc, y_adv_svc = data['Xaml'], data['yaml'] 
+
+    for t in range(trials):
+        if verbose: 
+            print(''.join(['   > Running ', str(t+1), ' of ', str(trials)]))
+
+        train_index = np.random.randint(0, len(y_tr), len(y_tr))
+
+        # split the original data into training / testing datasets. we are not going to 
+        # use the testing data since we are not going to learn a classifier. 
+        X_tr_n, y_tr_n = X_tr[train_index,:], y_tr[train_index]
+
+        # set the normal data 
+        X_tr_n_normal = X_tr_n[y_tr_n == 1]
+        X_tr_n_pattern = np.concatenate((X_tr_n_normal, X_adv_pattern), axis=0)
+        X_tr_n_single = np.concatenate((X_tr_n_normal, X_adv_single), axis=0)
+        X_tr_n_svc = np.concatenate((X_tr_n_normal, X_adv_svc), axis=0)
+
+        # isolation forest 
+        model_n = IsolationForest(contamination=contamination).fit(X_tr_n_normal)
+        model_a_pattern = IsolationForest(contamination=contamination).fit(X_tr_n_pattern)
+        model_a_single = IsolationForest(contamination=contamination).fit(X_tr_n_single)
+        model_a_svc = IsolationForest(contamination=contamination).fit(X_tr_n_svc)
+        y_if, y_if_pattern, y_if_single, y_if_svc = model_n.predict(X_te), model_a_pattern.predict(X_te), \
+            model_a_single.predict(X_te), model_a_svc.predict(X_te)
+        
+        # osvm 
+        model_n = OneClassSVM(kernel='poly', degree=degree).fit(X_tr_n_normal)
+        model_a_pattern = OneClassSVM(kernel='poly', degree=degree).fit(X_tr_n_pattern)
+        model_a_single = OneClassSVM(kernel='poly', degree=degree).fit(X_tr_n_single)
+        model_a_svc = OneClassSVM(kernel='poly', degree=degree).fit(X_tr_n_svc) 
+        y_svm, y_svm_pattern, y_svm_single, y_svm_svc = model_n.predict(X_te), model_a_pattern.predict(X_te), \
+            model_a_single.predict(X_te), model_a_svc.predict(X_te)
+
+        # elliiptic 
+        model_n = EllipticEnvelope(contamination=contamination, support_fraction=support_fraction).fit(X_tr_n_normal)
+        model_a_pattern = EllipticEnvelope(contamination=contamination, support_fraction=support_fraction).fit(X_tr_n_pattern)
+        model_a_single = EllipticEnvelope(contamination=contamination, support_fraction=support_fraction).fit(X_tr_n_single)
+        model_a_svc = EllipticEnvelope(contamination=contamination, support_fraction=support_fraction).fit(X_tr_n_svc) 
+        
+        y_ee, y_ee_pattern, y_ee_single, y_ee_svc= model_n.predict(X_te), model_a_pattern.predict(X_te), \
+            model_a_single.predict(X_te), model_a_svc.predict(X_te)
+
+        # local outliers
+        model_n = LocalOutlierFactor(contamination=contamination).fit(X_tr_n_normal)
+        model_a_pattern = LocalOutlierFactor(contamination=contamination).fit(X_tr_n_pattern)
+        model_a_single = LocalOutlierFactor(contamination=contamination).fit(X_tr_n_single)
+        model_a_svc = LocalOutlierFactor(contamination=contamination).fit(X_tr_n_svc)
+        
+        # the novelty flag needs to be set to run
+        model_n.novelty = True
+        model_a_svc.novelty = True
+        model_a_pattern.novelty = True
+        model_a_single.novelty = True
+        y_lo, y_lo_pattern, y_lo_single, y_lo_svc = model_n.predict(X_te), model_a_pattern.predict(X_te), \
+            model_a_single.predict(X_te), model_a_svc.predict(X_te)
+
+
+    
     return None 
