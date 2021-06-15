@@ -20,7 +20,8 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import os 
-import numpy as np 
+import numpy as np
+from scipy.spatial.distance import directed_hausdorff 
 
 from sklearn.svm import OneClassSVM
 from sklearn.ensemble import IsolationForest
@@ -576,9 +577,9 @@ def run_experiment_causative(dataset:str='nslkdd',
 
         # set the normal data 
         X_tr_n_normal = X_tr_n[y_tr_n == 1]
-        X_tr_n_pattern = np.concatenate((X_tr_n_normal, X_adv_pattern), axis=0)
-        X_tr_n_single = np.concatenate((X_tr_n_normal, X_adv_single), axis=0)
-        X_tr_n_svc = np.concatenate((X_tr_n_normal, X_adv_svc), axis=0)
+        X_tr_n_pattern = np.concatenate((X_tr_n_normal, X_adv_pattern[y_adv_pattern==0]), axis=0)
+        X_tr_n_single = np.concatenate((X_tr_n_normal, X_adv_single[y_adv_single==0]), axis=0)
+        X_tr_n_svc = np.concatenate((X_tr_n_normal, X_adv_svc[y_adv_svc==0]), axis=0)
 
         # isolation forest 
         model_n = IsolationForest(contamination=contamination).fit(X_tr_n_normal)
@@ -624,29 +625,280 @@ def run_experiment_causative(dataset:str='nslkdd',
         acc_if_pattern, fs_if_pattern, tpr_if_pattern, tnr_if_pattern, mcc_if_pattern = get_performance(y_true=y_te, y_hat=y_if_pattern)
         acc_if_single, fs_if_single, tpr_if_single, tnr_if_single, mcc_if_single = get_performance(y_true=y_te, y_hat=y_if_single)
         acc_if_svc, fs_if_svc, tpr_if_svc, tnr_if_svc, mcc_if_svc = get_performance(y_true=y_te, y_hat=y_if_svc)
+        accs_if += acc_if
+        fss_if += fs_if 
+        tprs_if += tpr_if
+        tnrs_if += tnr_if
+        mccs_if += mcc_if
+        accs_if_pattern += acc_if_pattern
+        fss_if_pattern += fs_if_pattern 
+        tprs_if_pattern += tpr_if_pattern
+        tnrs_if_pattern += tnr_if_pattern
+        mccs_if_pattern += mcc_if_pattern
+        accs_if_single += acc_if_single
+        fss_if_single += fs_if_single 
+        tprs_if_single += tpr_if_single
+        tnrs_if_single += tnr_if_single
+        mccs_if_single += mcc_if_single
+        accs_if_svc += acc_if_svc
+        fss_if_svc += fs_if_svc 
+        tprs_if_svc += tpr_if_svc
+        tnrs_if_svc += tnr_if_svc
+        mccs_if_svc += mcc_if_svc
+
 
         acc_svm, fs_svm, tpr_svm, tnr_svm, mcc_svm = get_performance(y_true=y_te, y_hat=y_if)
         acc_svm_pattern, fs_svm_pattern, tpr_svm_pattern, tnr_svm_pattern, mcc_svm_pattern = get_performance(y_true=y_te, y_hat=y_svm_pattern)
         acc_svm_single, fs_svm_single, tpr_svm_single, tnr_svm_single, mcc_svm_single = get_performance(y_true=y_te, y_hat=y_svm_single)
         acc_svm_svc, fs_svm_svc, tpr_svm_svc, tnr_svm_svc, mcc_svm_svc = get_performance(y_true=y_te, y_hat=y_svm_svc)
+        accs_svm += acc_svm
+        fss_svm += fs_svm 
+        tprs_svm += tpr_svm
+        tnrs_svm += tnr_svm
+        mccs_svm += mcc_svm
+        accs_svm_pattern += acc_svm_pattern
+        fss_svm_pattern += fs_svm_pattern 
+        tprs_svm_pattern += tpr_svm_pattern
+        tnrs_svm_pattern += tnr_svm_pattern
+        mccs_svm_pattern += mcc_svm_pattern
+        accs_svm_single += acc_svm_single
+        fss_svm_single += fs_svm_single 
+        tprs_svm_single += tpr_svm_single
+        tnrs_svm_single += tnr_svm_single
+        mccs_svm_single += mcc_svm_single
+        accs_svm_svc += acc_svm_svc
+        fss_svm_svc += fs_svm_svc 
+        tprs_svm_svc += tpr_svm_svc
+        tnrs_svm_svc += tnr_svm_svc
+        mccs_svm_svc += mcc_svm_svc
+
 
         acc_ee, fs_ee, tpr_ee, tnr_ee, mcc_ee = get_performance(y_true=y_te, y_hat=y_ee)
         acc_ee_pattern, fs_ee_pattern, tpr_ee_pattern, tnr_ee_pattern, mcc_ee_pattern = get_performance(y_true=y_te, y_hat=y_ee_pattern)
         acc_ee_single, fs_ee_single, tpr_ee_single, tnr_ee_single, mcc_ee_single = get_performance(y_true=y_te, y_hat=y_ee_single)
         acc_ee_svc, fs_ee_svc, tpr_ee_svc, tnr_ee_svc, mcc_ee_svc = get_performance(y_true=y_te, y_hat=y_ee_svc)
+        accs_ee += acc_ee
+        fss_ee += fs_ee 
+        tprs_ee += tpr_ee
+        tnrs_ee += tnr_ee
+        mccs_ee += mcc_ee
+        accs_ee_pattern += acc_ee_pattern
+        fss_ee_pattern += fs_ee_pattern 
+        tprs_ee_pattern += tpr_ee_pattern
+        tnrs_ee_pattern += tnr_ee_pattern
+        mccs_ee_pattern += mcc_ee_pattern
+        accs_ee_single += acc_ee_single
+        fss_ee_single += fs_ee_single 
+        tprs_ee_single += tpr_ee_single
+        tnrs_ee_single += tnr_ee_single
+        mccs_ee_single += mcc_ee_single
+        accs_ee_svc += acc_ee_svc
+        fss_ee_svc += fs_ee_svc 
+        tprs_ee_svc += tpr_ee_svc
+        tnrs_ee_svc += tnr_ee_svc
+        mccs_ee_svc += mcc_ee_svc
 
-
-        acc_lo, fs_if, tpr_lo, tnr_lo, mcc_lo = get_performance(y_true=y_te, y_hat=y_if)
+        acc_lo, fs_lo, tpr_lo, tnr_lo, mcc_lo = get_performance(y_true=y_te, y_hat=y_if)
         acc_lo_pattern, fs_lo_pattern, tpr_lo_pattern, tnr_lo_pattern, mcc_lo_pattern = get_performance(y_true=y_te, y_hat=y_lo_pattern)
         acc_lo_single, fs_lo_single, tpr_lo_single, tnr_lo_single, mcc_lo_single = get_performance(y_true=y_te, y_hat=y_lo_single)
         acc_lo_svc, fs_lo_svc, tpr_lo_svc, tnr_lo_svc, mcc_lo_svc = get_performance(y_true=y_te, y_hat=y_lo_svc)
+        accs_lo += acc_lo
+        fss_lo += fs_lo 
+        tprs_lo += tpr_lo
+        tnrs_lo += tnr_lo
+        mccs_lo += mcc_lo
+        accs_lo_pattern += acc_lo_pattern
+        fss_lo_pattern += fs_lo_pattern 
+        tprs_lo_pattern += tpr_lo_pattern
+        tnrs_lo_pattern += tnr_lo_pattern
+        mccs_lo_pattern += mcc_lo_pattern
+        accs_lo_single += acc_lo_single
+        fss_lo_single += fs_lo_single 
+        tprs_lo_single += tpr_lo_single
+        tnrs_lo_single += tnr_lo_single
+        mccs_lo_single += mcc_lo_single
+        accs_lo_svc += acc_lo_svc
+        fss_lo_svc += fs_lo_svc 
+        tprs_lo_svc += tpr_lo_svc
+        tnrs_lo_svc += tnr_lo_svc
+        mccs_lo_svc += mcc_lo_svc
 
+    # scale by the number of trials 
+    accs_if /= trials
+    fss_if /= trials
+    tprs_if /= trials
+    tnrs_if /= trials
+    mccs_if /= trials
+    accs_if_pattern /= trials
+    fss_if_pattern /= trials
+    tprs_if_pattern /= trials
+    tnrs_if_pattern /= trials
+    mccs_if_pattern /= trials
+    accs_if_single /= trials
+    fss_if_single /= trials
+    tprs_if_single /= trials
+    tnrs_if_single /= trials
+    mccs_if_single /= trials
+    accs_if_svc /= trials
+    fss_if_svc /= trials
+    tprs_if_svc /= trials
+    tnrs_if_svc /= trials
+    mccs_if_svc /= trials
 
+    accs_svm /= trials
+    fss_svm /= trials
+    tprs_svm /= trials
+    tnrs_svm /= trials
+    mccs_svm /= trials
+    accs_svm_pattern /= trials
+    fss_svm_pattern /= trials
+    tprs_svm_pattern /= trials
+    tnrs_svm_pattern /= trials
+    mccs_svm_pattern /= trials
+    accs_svm_single /= trials
+    fss_svm_single /= trials
+    tprs_svm_single /= trials
+    tnrs_svm_single /= trials
+    mccs_svm_single /= trials
+    accs_svm_svc /= trials
+    fss_svm_svc /= trials
+    tprs_svm_svc /= trials
+    tnrs_svm_svc /= trials
+    mccs_svm_svc /= trials
 
+    accs_ee /= trials
+    fss_ee /= trials
+    tprs_ee /= trials
+    tnrs_ee /= trials
+    mccs_ee /= trials
+    accs_ee_pattern /= trials
+    fss_ee_pattern /= trials
+    tprs_ee_pattern /= trials
+    tnrs_ee_pattern /= trials
+    mccs_ee_pattern /= trials
+    accs_ee_single /= trials
+    fss_ee_single /= trials
+    tprs_ee_single /= trials
+    tnrs_ee_single /= trials
+    mccs_ee_single /= trials
+    accs_ee_svc /= trials
+    fss_ee_svc /= trials
+    tprs_ee_svc /= trials
+    tnrs_ee_svc /= trials
+    mccs_ee_svc /= trials
+        
+    accs_lo /= trials
+    fss_lo /= trials
+    tprs_lo /= trials
+    tnrs_lo /= trials
+    mccs_lo /= trials
+    accs_lo_pattern /= trials
+    fss_lo_pattern /= trials
+    tprs_lo_pattern /= trials
+    tnrs_lo_pattern /= trials
+    mccs_lo_pattern /= trials
+    accs_lo_single /= trials
+    fss_lo_single /= trials
+    tprs_lo_single /= trials
+    tnrs_lo_single /= trials
+    mccs_lo_single /= trials
+    accs_lo_svc /= trials
+    fss_lo_svc /= trials
+    tprs_lo_svc /= trials
+    tnrs_lo_svc /= trials
+    mccs_lo_svc /= trials
 
+    
+    
+    
+    
+    
+    
+    
+    
+    if not os.path.isdir('outputs/'):
+        os.mkdir('outputs/')
 
-
-
-
+    np.savez(OUTPUT_FILE,
+             accs_if = accs_if,  
+             fss_if = fss_if,  
+             tprs_if = tprs_if, 
+             tnrs_if = tnrs_if, 
+             mccs_if = mccs_if, 
+             accs_if_pattern = accs_if_pattern, 
+             fss_if_pattern = fss_if_pattern,  
+             tprs_if_pattern = tprs_if_pattern, 
+             tnrs_if_pattern = tnrs_if_pattern, 
+             mccs_if_pattern = mccs_if_pattern, 
+             accs_if_single = accs_if_single, 
+             fss_if_single = fss_if_single,  
+             tprs_if_single = tprs_if_single, 
+             tnrs_if_single = tnrs_if_single, 
+             mccs_if_single = mccs_if_single, 
+             accs_if_svc = accs_if_svc, 
+             fss_if_svc = fss_if_svc,  
+             tprs_if_svc = tprs_if_svc, 
+             tnrs_if_svc = tnrs_if_svc, 
+             mccs_if_svc = mccs_if_svc, 
+             accs_svm = accs_svm, 
+             fss_svm = fss_svm,  
+             tprs_svm = tprs_svm, 
+             tnrs_svm = tnrs_svm, 
+             mccs_svm = mccs_svm, 
+             accs_svm_pattern = accs_svm_pattern, 
+             fss_svm_pattern = fss_svm_pattern,  
+             tprs_svm_pattern = tprs_svm_pattern, 
+             tnrs_svm_pattern = tnrs_svm_pattern, 
+             mccs_svm_pattern = mccs_svm_pattern, 
+             accs_svm_single = accs_svm_single, 
+             fss_svm_single = fss_svm_single,  
+             tprs_svm_single = tprs_svm_single, 
+             tnrs_svm_single = tnrs_svm_single, 
+             mccs_svm_single = mccs_svm_single, 
+             accs_svm_svc = accs_svm_svc, 
+             fss_svm_svc = fss_svm_svc,  
+             tprs_svm_svc = tprs_svm_svc, 
+             tnrs_svm_svc = tnrs_svm_svc, 
+             mccs_svm_svc = mccs_svm_svc, 
+             accs_ee = accs_ee, 
+             fss_ee = fss_ee,  
+             tprs_ee = tprs_ee, 
+             tnrs_ee = tnrs_ee, 
+             mccs_ee = mccs_ee, 
+             accs_ee_pattern = accs_ee_pattern, 
+             fss_ee_pattern = fss_ee_pattern,  
+             tprs_ee_pattern = tprs_ee_pattern, 
+             tnrs_ee_pattern = tnrs_ee_pattern, 
+             mccs_ee_pattern = mccs_ee_pattern, 
+             accs_ee_single = accs_ee_single, 
+             fss_ee_single = fss_ee_single,  
+             tprs_ee_single = tprs_ee_single, 
+             tnrs_ee_single = tnrs_ee_single, 
+             mccs_ee_single = mccs_ee_single, 
+             accs_ee_svc = accs_ee_svc, 
+             fss_ee_svc = fss_ee_svc,  
+             tprs_ee_svc = tprs_ee_svc, 
+             tnrs_ee_svc = tnrs_ee_svc, 
+             mccs_ee_svc = mccs_ee_svc, 
+             accs_lo = accs_lo, 
+             fss_lo = fss_lo,  
+             tprs_lo = tprs_lo, 
+             tnrs_lo = tnrs_lo, 
+             mccs_lo = mccs_lo, 
+             accs_lo_pattern = accs_lo_pattern, 
+             fss_lo_pattern = fss_lo_pattern,  
+             tprs_lo_pattern = tprs_lo_pattern, 
+             tnrs_lo_pattern = tnrs_lo_pattern, 
+             mccs_lo_pattern = mccs_lo_pattern, 
+             accs_lo_single = accs_lo_single, 
+             fss_lo_single = fss_lo_single,  
+             tprs_lo_single = tprs_lo_single, 
+             tnrs_lo_single = tnrs_lo_single, 
+             mccs_lo_single = mccs_lo_single, 
+             accs_lo_svc = accs_lo_svc, 
+             fss_lo_svc = fss_lo_svc,  
+             tprs_lo_svc = tprs_lo_svc, 
+             tnrs_lo_svc = tnrs_lo_svc, 
+             mccs_lo_svc = mccs_lo_svc)
     
     return None 
