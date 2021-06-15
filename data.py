@@ -240,8 +240,14 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
                                        max_iter:int=10,
                                        pp_poison:float=0.33,
                                        atype:str='cleanlabel_pattern'):
-    """
+    """generate data for causative adversarial attacks 
 
+    :param X_tr: training features 
+    :param y_tr: training labels 
+    :param X: seeds to train adversarial data 
+    :param y: labels to train adversarial data 
+    :param max_iter: number of optimization to run for the differnet attacks 
+    :param pp_poison: poisoning percents (not really used)
     :param atype: String that is the attack type ['cleanlabel_pattern', 'cleanlabel_single']
     """
 
