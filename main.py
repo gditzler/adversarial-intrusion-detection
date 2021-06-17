@@ -26,11 +26,11 @@ from experiments import run_experiment_exploratory, run_experiment_causative
 if __name__ == '__main__': 
     '''
     run_experiment_exploratory(dataset='nslkdd',
-                               trials=5, 
+                               trials=15, 
                                type='attacks_all', 
                                verbose=True)
     run_experiment_exploratory(dataset='nslkdd',
-                               trials=5, 
+                               trials=15, 
                                type='attacks_only', 
                                verbose=True) 
     '''
@@ -46,4 +46,8 @@ if __name__ == '__main__':
                              trials=15, 
                              ppoison=0.15, 
                              verbose=True)
+<<<<<<< HEAD
+=======
+    '''
+>>>>>>> b6b8f59d0971629b3ae925325b4ee08127760dcf
     print('Done')
