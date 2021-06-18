@@ -492,7 +492,7 @@ def run_experiment_causative(dataset:str='nslkdd',
 
     # scale by the number of trials
     all_perfs = scale_dict(all_perfs, MODELS=MODELS, ATTACKS=ATTACKS, PERFS=PERFS, TRIALS=trials)
-        
+    
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
 
