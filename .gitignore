@@ -1,5 +1,6 @@
 # code files 
-*.pyc 
+*.pyc
+*.pdf 
 
 # folders 
 .DS_Store
