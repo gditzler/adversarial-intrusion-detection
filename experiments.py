@@ -130,26 +130,26 @@ def run_experiment_exploratory(dataset:str='unswnb15',
                             mccs_lo, ATTACK): 
         """
         """
-        pdict[''.join([accs_if, ATTACK])] += accs_if
-        pdict[''.join([fss_if, ATTACK])] += fss_if
-        pdict[''.join([tprs_if, ATTACK])] += tprs_if
-        pdict[''.join([tnrs_if, ATTACK])] += tnrs_if
-        pdict[''.join([mccs_if, ATTACK])] += mccs_if
-        pdict[''.join([accs_svm, ATTACK])] += accs_svm
-        pdict[''.join([fss_svm, ATTACK])] += fss_svm
-        pdict[''.join([tprs_svm, ATTACK])] += tprs_svm
-        pdict[''.join([tnrs_svm, ATTACK])] += tnrs_svm
-        pdict[''.join([mccs_svm, ATTACK])] += mccs_svm
-        pdict[''.join([accs_ee, ATTACK])] += accs_ee
-        pdict[''.join([fss_ee, ATTACK])] += fss_ee
-        pdict[''.join([tprs_ee, ATTACK])] += tprs_ee
-        pdict[''.join([tnrs_ee, ATTACK])] += tnrs_ee
-        pdict[''.join([mccs_ee, ATTACK])] += mccs_ee
-        pdict[''.join([accs_lo, ATTACK])] += accs_lo
-        pdict[''.join([fss_lo,  ATTACK])] += fss_lo
-        pdict[''.join([tprs_lo, ATTACK])] += tprs_lo
-        pdict[''.join([tnrs_lo, ATTACK])] += tnrs_lo
-        pdict[''.join([mccs_lo, ATTACK])] += mccs_lo
+        pdict[''.join(['accs_if_', ATTACK])] += accs_if
+        pdict[''.join(['fss_if_', ATTACK])] += fss_if
+        pdict[''.join(['tprs_if_', ATTACK])] += tprs_if
+        pdict[''.join(['tnrs_if_', ATTACK])] += tnrs_if
+        pdict[''.join(['mccs_if_', ATTACK])] += mccs_if
+        pdict[''.join(['accs_svm_', ATTACK])] += accs_svm
+        pdict[''.join(['fss_svm_', ATTACK])] += fss_svm
+        pdict[''.join(['tprs_svm_', ATTACK])] += tprs_svm
+        pdict[''.join(['tnrs_svm_', ATTACK])] += tnrs_svm
+        pdict[''.join(['mccs_svm_', ATTACK])] += mccs_svm
+        pdict[''.join(['accs_ee_', ATTACK])] += accs_ee
+        pdict[''.join(['fss_ee_', ATTACK])] += fss_ee
+        pdict[''.join(['tprs_ee_', ATTACK])] += tprs_ee
+        pdict[''.join(['tnrs_ee_', ATTACK])] += tnrs_ee
+        pdict[''.join(['mccs_ee_', ATTACK])] += mccs_ee
+        pdict[''.join(['accs_lo_', ATTACK])] += accs_lo
+        pdict[''.join(['fss_lo_',  ATTACK])] += fss_lo
+        pdict[''.join(['tprs_lo_', ATTACK])] += tprs_lo
+        pdict[''.join(['tnrs_lo_', ATTACK])] += tnrs_lo
+        pdict[''.join(['mccs_lo_', ATTACK])] += mccs_lo
         return pdict
 
     def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
@@ -336,26 +336,26 @@ def run_experiment_causative(dataset:str='nslkdd',
                             mccs_lo, ATTACK): 
         """
         """
-        pdict[''.join([accs_if, ATTACK])] += accs_if
-        pdict[''.join([fss_if, ATTACK])] += fss_if
-        pdict[''.join([tprs_if, ATTACK])] += tprs_if
-        pdict[''.join([tnrs_if, ATTACK])] += tnrs_if
-        pdict[''.join([mccs_if, ATTACK])] += mccs_if
-        pdict[''.join([accs_svm, ATTACK])] += accs_svm
-        pdict[''.join([fss_svm, ATTACK])] += fss_svm
-        pdict[''.join([tprs_svm, ATTACK])] += tprs_svm
-        pdict[''.join([tnrs_svm, ATTACK])] += tnrs_svm
-        pdict[''.join([mccs_svm, ATTACK])] += mccs_svm
-        pdict[''.join([accs_ee, ATTACK])] += accs_ee
-        pdict[''.join([fss_ee, ATTACK])] += fss_ee
-        pdict[''.join([tprs_ee, ATTACK])] += tprs_ee
-        pdict[''.join([tnrs_ee, ATTACK])] += tnrs_ee
-        pdict[''.join([mccs_ee, ATTACK])] += mccs_ee
-        pdict[''.join([accs_lo, ATTACK])] += accs_lo
-        pdict[''.join([fss_lo,  ATTACK])] += fss_lo
-        pdict[''.join([tprs_lo, ATTACK])] += tprs_lo
-        pdict[''.join([tnrs_lo, ATTACK])] += tnrs_lo
-        pdict[''.join([mccs_lo, ATTACK])] += mccs_lo
+        pdict[''.join(['accs_if_', ATTACK])] += accs_if
+        pdict[''.join(['fss_if_', ATTACK])] += fss_if
+        pdict[''.join(['tprs_if_', ATTACK])] += tprs_if
+        pdict[''.join(['tnrs_if_', ATTACK])] += tnrs_if
+        pdict[''.join(['mccs_if_', ATTACK])] += mccs_if
+        pdict[''.join(['accs_svm_', ATTACK])] += accs_svm
+        pdict[''.join(['fss_svm_', ATTACK])] += fss_svm
+        pdict[''.join(['tprs_svm_', ATTACK])] += tprs_svm
+        pdict[''.join(['tnrs_svm_', ATTACK])] += tnrs_svm
+        pdict[''.join(['mccs_svm_', ATTACK])] += mccs_svm
+        pdict[''.join(['accs_ee_', ATTACK])] += accs_ee
+        pdict[''.join(['fss_ee_', ATTACK])] += fss_ee
+        pdict[''.join(['tprs_ee_', ATTACK])] += tprs_ee
+        pdict[''.join(['tnrs_ee_', ATTACK])] += tnrs_ee
+        pdict[''.join(['mccs_ee_', ATTACK])] += mccs_ee
+        pdict[''.join(['accs_lo_', ATTACK])] += accs_lo
+        pdict[''.join(['fss_lo_',  ATTACK])] += fss_lo
+        pdict[''.join(['tprs_lo_', ATTACK])] += tprs_lo
+        pdict[''.join(['tnrs_lo_', ATTACK])] += tnrs_lo
+        pdict[''.join(['mccs_lo_', ATTACK])] += mccs_lo
         return pdict
 
     def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
