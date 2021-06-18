@@ -47,7 +47,7 @@ def update_performances(pdict, accs_if, fss_if,  tprs_if,  tnrs_if,  mccs_if,  a
                         fss_svm, tprs_svm, tnrs_svm, mccs_svm, accs_ee, fss_ee, 
                         tprs_ee, tnrs_ee, mccs_ee, accs_lo, fss_lo, tprs_lo, tnrs_lo, 
                         mccs_lo, ATTACK): 
-    """
+    """update the dictionary of perfromances 
     """
     pdict[''.join(['accs_if_', ATTACK])] += accs_if
     pdict[''.join(['fss_if_', ATTACK])] += fss_if
