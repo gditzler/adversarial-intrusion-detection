@@ -22,26 +22,14 @@
 
 from experiments import run_experiment_exploratory, run_experiment_causative
 
+TRIALS = 15 
+VERBOSE = True 
 
 if __name__ == '__main__': 
-    run_experiment_exploratory(dataset='nslkdd',
-                               trials=15, 
-                               type='attacks_all', 
-                               verbose=True)
-    run_experiment_exploratory(dataset='nslkdd',
-                               trials=15, 
-                               type='attacks_only', 
-                               verbose=True) 
-    run_experiment_causative(dataset='nslkdd', 
-                             trials=15, 
-                             ppoison=0.05, 
-                             verbose=True)
-    run_experiment_causative(dataset='nslkdd', 
-                             trials=15, 
-                             ppoison=0.1, 
-                             verbose=True)
-    run_experiment_causative(dataset='nslkdd', 
-                             trials=15, 
-                             ppoison=0.15, 
-                             verbose=True)
-    print('Done')
+    # run the experiments on the nslkdd dataset
+    DATASET = 'nslkdd' 
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all', verbose=VERBOSE)
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only', verbose=VERBOSE) 
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.05, verbose=VERBOSE)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.1, verbose=VERBOSE)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.15, verbose=VERBOSE)
