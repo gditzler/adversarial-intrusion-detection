@@ -21,7 +21,6 @@
 
 import os 
 import numpy as np
-from scipy.spatial.distance import directed_hausdorff 
 
 from sklearn.svm import OneClassSVM
 from sklearn.ensemble import IsolationForest
