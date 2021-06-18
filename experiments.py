@@ -32,6 +32,57 @@ from sklearn.model_selection import KFold
 from utils import get_performance
 
 
+# define the functions that are used to updated the dictionary that has the performances of the 
+# different methods on different attacks. 
+def init_perfs(MODELS:list, ATTACKS:list, PERFS:list):
+    """intialize a dictionary of performances  
+    """
+    all_perfs = {}
+    for m in MODELS: 
+        for a in ATTACKS: 
+            for p in PERFS: 
+                all_perfs[''.join([p, '_', m, '_', a])] = 0.0
+    return all_perfs
+
+def update_performances(pdict, accs_if, fss_if,  tprs_if,  tnrs_if,  mccs_if,  accs_svm, 
+                        fss_svm, tprs_svm, tnrs_svm, mccs_svm, accs_ee, fss_ee, 
+                        tprs_ee, tnrs_ee, mccs_ee, accs_lo, fss_lo, tprs_lo, tnrs_lo, 
+                        mccs_lo, ATTACK): 
+    """
+    """
+    pdict[''.join(['accs_if_', ATTACK])] += accs_if
+    pdict[''.join(['fss_if_', ATTACK])] += fss_if
+    pdict[''.join(['tprs_if_', ATTACK])] += tprs_if
+    pdict[''.join(['tnrs_if_', ATTACK])] += tnrs_if
+    pdict[''.join(['mccs_if_', ATTACK])] += mccs_if
+    pdict[''.join(['accs_svm_', ATTACK])] += accs_svm
+    pdict[''.join(['fss_svm_', ATTACK])] += fss_svm
+    pdict[''.join(['tprs_svm_', ATTACK])] += tprs_svm
+    pdict[''.join(['tnrs_svm_', ATTACK])] += tnrs_svm
+    pdict[''.join(['mccs_svm_', ATTACK])] += mccs_svm
+    pdict[''.join(['accs_ee_', ATTACK])] += accs_ee
+    pdict[''.join(['fss_ee_', ATTACK])] += fss_ee
+    pdict[''.join(['tprs_ee_', ATTACK])] += tprs_ee
+    pdict[''.join(['tnrs_ee_', ATTACK])] += tnrs_ee
+    pdict[''.join(['mccs_ee_', ATTACK])] += mccs_ee
+    pdict[''.join(['accs_lo_', ATTACK])] += accs_lo
+    pdict[''.join(['fss_lo_',  ATTACK])] += fss_lo
+    pdict[''.join(['tprs_lo_', ATTACK])] += tprs_lo
+    pdict[''.join(['tnrs_lo_', ATTACK])] += tnrs_lo
+    pdict[''.join(['mccs_lo_', ATTACK])] += mccs_lo
+    return pdict
+
+def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
+    """intialize a dictionary of performances  
+    """
+    for m in MODELS: 
+        for a in ATTACKS: 
+            for p in PERFS: 
+                all_perfs[''.join([p, '_', 'm', '_', a])] /= TRIALS
+    return all_perfs 
+
+
+
 def run_experiment_exploratory(dataset:str='unswnb15', 
                                trials:int=10, 
                                type:str='attacks_all', 
@@ -112,55 +163,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     # we need to set up the k-fold evaluator 
     kf = KFold(n_splits=trials)
     
-    # define the functions that are used to updated the dictionary that has the performances of the 
-    # different methods on different attacks. 
-    def init_perfs(MODELS:list, ATTACKS:list, PERFS:list):
-        """intialize a dictionary of performances  
-        """
-        all_perfs = {}
-        for m in MODELS: 
-            for a in ATTACKS: 
-                for p in PERFS: 
-                    all_perfs[''.join([p, '_', 'm', '_', a])] = 0.0
-        return all_perfs
-
-    def update_performances(pdict, accs_if, fss_if,  tprs_if,  tnrs_if,  mccs_if,  accs_svm, 
-                            fss_svm, tprs_svm, tnrs_svm, mccs_svm, accs_ee, fss_ee, 
-                            tprs_ee, tnrs_ee, mccs_ee, accs_lo, fss_lo, tprs_lo, tnrs_lo, 
-                            mccs_lo, ATTACK): 
-        """
-        """
-        pdict[''.join(['accs_if_', ATTACK])] += accs_if
-        pdict[''.join(['fss_if_', ATTACK])] += fss_if
-        pdict[''.join(['tprs_if_', ATTACK])] += tprs_if
-        pdict[''.join(['tnrs_if_', ATTACK])] += tnrs_if
-        pdict[''.join(['mccs_if_', ATTACK])] += mccs_if
-        pdict[''.join(['accs_svm_', ATTACK])] += accs_svm
-        pdict[''.join(['fss_svm_', ATTACK])] += fss_svm
-        pdict[''.join(['tprs_svm_', ATTACK])] += tprs_svm
-        pdict[''.join(['tnrs_svm_', ATTACK])] += tnrs_svm
-        pdict[''.join(['mccs_svm_', ATTACK])] += mccs_svm
-        pdict[''.join(['accs_ee_', ATTACK])] += accs_ee
-        pdict[''.join(['fss_ee_', ATTACK])] += fss_ee
-        pdict[''.join(['tprs_ee_', ATTACK])] += tprs_ee
-        pdict[''.join(['tnrs_ee_', ATTACK])] += tnrs_ee
-        pdict[''.join(['mccs_ee_', ATTACK])] += mccs_ee
-        pdict[''.join(['accs_lo_', ATTACK])] += accs_lo
-        pdict[''.join(['fss_lo_',  ATTACK])] += fss_lo
-        pdict[''.join(['tprs_lo_', ATTACK])] += tprs_lo
-        pdict[''.join(['tnrs_lo_', ATTACK])] += tnrs_lo
-        pdict[''.join(['mccs_lo_', ATTACK])] += mccs_lo
-        return pdict
-
-    def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
-        """intialize a dictionary of performances  
-        """
-        for m in MODELS: 
-            for a in ATTACKS: 
-                for p in PERFS: 
-                    all_perfs[''.join([p, '_', 'm', '_', a])] /= TRIALS
-        return all_perfs 
-
     all_perfs = init_perfs(MODELS=MODELS, ATTACKS=ATTACKS, PERFS=PERFS) 
 
     ell = 0
@@ -317,58 +319,7 @@ def run_experiment_causative(dataset:str='nslkdd',
     data = np.load(''.join(['data/causative/full_data_', dataset, '_svc.npz']), allow_pickle=True)
     X_adv_svc, y_adv_svc = data['Xaml'], np.argmax(data['yaml'], axis=1) 
 
-        
-    # define the functions that are used to updated the dictionary that has the performances of the 
-    # different methods on different attacks. 
-    def init_perfs(MODELS:list, ATTACKS:list, PERFS:list):
-        """intialize a dictionary of performances  
-        """
-        all_perfs = {}
-        for m in MODELS: 
-            for a in ATTACKS: 
-                for p in PERFS: 
-                    all_perfs[''.join([p, '_', 'm', '_', a])] = 0.0
-        return all_perfs
-
-    def update_performances(pdict, accs_if, fss_if,  tprs_if,  tnrs_if,  mccs_if,  accs_svm, 
-                            fss_svm, tprs_svm, tnrs_svm, mccs_svm, accs_ee, fss_ee, 
-                            tprs_ee, tnrs_ee, mccs_ee, accs_lo, fss_lo, tprs_lo, tnrs_lo, 
-                            mccs_lo, ATTACK): 
-        """
-        """
-        pdict[''.join(['accs_if_', ATTACK])] += accs_if
-        pdict[''.join(['fss_if_', ATTACK])] += fss_if
-        pdict[''.join(['tprs_if_', ATTACK])] += tprs_if
-        pdict[''.join(['tnrs_if_', ATTACK])] += tnrs_if
-        pdict[''.join(['mccs_if_', ATTACK])] += mccs_if
-        pdict[''.join(['accs_svm_', ATTACK])] += accs_svm
-        pdict[''.join(['fss_svm_', ATTACK])] += fss_svm
-        pdict[''.join(['tprs_svm_', ATTACK])] += tprs_svm
-        pdict[''.join(['tnrs_svm_', ATTACK])] += tnrs_svm
-        pdict[''.join(['mccs_svm_', ATTACK])] += mccs_svm
-        pdict[''.join(['accs_ee_', ATTACK])] += accs_ee
-        pdict[''.join(['fss_ee_', ATTACK])] += fss_ee
-        pdict[''.join(['tprs_ee_', ATTACK])] += tprs_ee
-        pdict[''.join(['tnrs_ee_', ATTACK])] += tnrs_ee
-        pdict[''.join(['mccs_ee_', ATTACK])] += mccs_ee
-        pdict[''.join(['accs_lo_', ATTACK])] += accs_lo
-        pdict[''.join(['fss_lo_',  ATTACK])] += fss_lo
-        pdict[''.join(['tprs_lo_', ATTACK])] += tprs_lo
-        pdict[''.join(['tnrs_lo_', ATTACK])] += tnrs_lo
-        pdict[''.join(['mccs_lo_', ATTACK])] += mccs_lo
-        return pdict
-
-    def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
-        """intialize a dictionary of performances  
-        """
-        for m in MODELS: 
-            for a in ATTACKS: 
-                for p in PERFS: 
-                    all_perfs[''.join([p, '_', 'm', '_', a])] /= TRIALS
-        return all_perfs 
-
     all_perfs = init_perfs(MODELS=MODELS, ATTACKS=ATTACKS, PERFS=PERFS) 
-
 
     for t in range(trials):
         if verbose: 
@@ -454,7 +405,7 @@ def run_experiment_causative(dataset:str='nslkdd',
         acc_ee_single, fs_ee_single, tpr_ee_single, tnr_ee_single, mcc_ee_single = get_performance(y_true=y_te, y_hat=y_ee_single)
         acc_ee_svc, fs_ee_svc, tpr_ee_svc, tnr_ee_svc, mcc_ee_svc = get_performance(y_true=y_te, y_hat=y_ee_svc)
         
-        acc_lo_baseline, fs_lo_baseline, tpr_lo_baseline, tnr_lo_baseline, mcc_lo_baseline = get_performance(y_true=y_te, y_hat=y_if)
+        acc_lo_baseline, fs_lo_baseline, tpr_lo_baseline, tnr_lo_baseline, mcc_lo_baseline = get_performance(y_true=y_te, y_hat=y_lo)
         acc_lo_pattern, fs_lo_pattern, tpr_lo_pattern, tnr_lo_pattern, mcc_lo_pattern = get_performance(y_true=y_te, y_hat=y_lo_pattern)
         acc_lo_single, fs_lo_single, tpr_lo_single, tnr_lo_single, mcc_lo_single = get_performance(y_true=y_te, y_hat=y_lo_single)
         acc_lo_svc, fs_lo_svc, tpr_lo_svc, tnr_lo_svc, mcc_lo_svc = get_performance(y_true=y_te, y_hat=y_lo_svc)
