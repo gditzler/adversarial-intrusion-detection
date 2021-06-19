@@ -43,10 +43,11 @@ def init_perfs(MODELS:list, ATTACKS:list, PERFS:list):
                 all_perfs[''.join([p, '_', m, '_', a])] = 0.0
     return all_perfs
 
-def update_performances(pdict, accs_if, fss_if,  tprs_if,  tnrs_if,  mccs_if,  accs_svm, 
-                        fss_svm, tprs_svm, tnrs_svm, mccs_svm, accs_ee, fss_ee, 
-                        tprs_ee, tnrs_ee, mccs_ee, accs_lo, fss_lo, tprs_lo, tnrs_lo, 
-                        mccs_lo, ATTACK): 
+def update_performances(pdict:dict, accs_if:float, fss_if:float,  tprs_if:float,  tnrs_if:float,  
+                        mccs_if:float,  accs_svm:float, fss_svm:float, tprs_svm:float, tnrs_svm:float, 
+                        mccs_svm:float, accs_ee:float, fss_ee:float, tprs_ee:float, tnrs_ee:float, 
+                        mccs_ee:float, accs_lo:float, fss_lo:float, tprs_lo, tnrs_lo:float, 
+                        mccs_lo:float, ATTACK:str): 
     """update the dictionary of perfromances 
     """
     pdict[''.join(['accs_if_', ATTACK])] += accs_if
