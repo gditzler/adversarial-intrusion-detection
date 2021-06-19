@@ -77,7 +77,7 @@ def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
     for m in MODELS: 
         for a in ATTACKS: 
             for p in PERFS: 
-                all_perfs[''.join([p, '_', 'm', '_', a])] /= TRIALS
+                all_perfs[''.join([p, '_', m, '_', a])] /= TRIALS
     return all_perfs 
 
 
