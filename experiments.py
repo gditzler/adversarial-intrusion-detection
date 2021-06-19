@@ -89,12 +89,12 @@ def run_experiment_exploratory(dataset:str='unswnb15',
                                verbose:bool=False): 
     """Run the experiment for exploratory attacks against intrusion detection. 
 
-    This function runs the multiple attacks against several different detection algorithms
+    This function runs the multiple exploratory attacks against several detection algorithms
     which are OneClassSVM, IsolationForest, LocalOutlierFactor and EllipticEnvelope. The 
     performances are ACC, TPR, TNR and MCC. The function returns nothing, but will write 
     files to 'outputs/'
 
-    param: dataset  Dataset [unswnb15, nslkdd]
+    param: dataset  Dataset [nslkdd]
     param: trials   Number of cross validation runs to perform 
     param: type     Type of experiment to run [attack_all, attack_only]
     param: verbose  Print stuff to the output?
@@ -284,14 +284,22 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
     np.savez(OUTPUT_FILE, all_pers = all_perfs)
 
-    return None 
-
 
 def run_experiment_causative(dataset:str='nslkdd', 
                              trials:int=10, 
                              ppoison:float=0.1, 
                              verbose:bool=False): 
-    """run the causative experiments 
+    """run the causative experiments
+
+    This function runs the multiple causative attacks against several detection algorithms
+    which are OneClassSVM, IsolationForest, LocalOutlierFactor and EllipticEnvelope. The 
+    performances are ACC, TPR, TNR and MCC. The function returns nothing, but will write 
+    files to 'outputs/'
+
+    param: dataset  Dataset [nslkdd]
+    param: trials   Number of cross validation runs to perform 
+    param: type     Type of experiment to run [attack_all, attack_only]
+    param: verbose  Print stuff to the output?
     """
     
     if verbose: 
@@ -448,5 +456,3 @@ def run_experiment_causative(dataset:str='nslkdd',
         os.mkdir('outputs/')
 
     np.savez(OUTPUT_FILE, all_perfs = all_perfs)
-    
-    return None 
