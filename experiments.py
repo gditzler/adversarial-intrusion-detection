@@ -311,7 +311,7 @@ def run_experiment_causative(dataset:str='nslkdd',
     degree = 3
     
     MODELS = ['if', 'svm', 'ee', 'lo']
-    ATTACKS = ['', 'pattern', 'single', 'svc']
+    ATTACKS = ['baseline', 'pattern', 'single', 'svc']
     PERFS = ['accs', 'fss', 'tprs', 'tnrs', 'mccs']
     OUTPUT_FILE = ''.join(['outputs/results_ids_causative_', dataset,'_pp', str(int(100*ppoison)), '.npz'])
 
