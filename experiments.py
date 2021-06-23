@@ -283,7 +283,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
 
-    pickle.save(all_perfs, open(OUTPUT_FILE, 'wb'))
+    pickle.dump(all_perfs, open(OUTPUT_FILE, 'wb'))
 
 
 def run_experiment_causative(dataset:str='nslkdd', 
@@ -456,4 +456,4 @@ def run_experiment_causative(dataset:str='nslkdd',
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
 
-    pickle.save(all_perfs, open(OUTPUT_FILE, 'wb'))
+    pickle.dump(all_perfs, open(OUTPUT_FILE, 'wb'))
