@@ -28,8 +28,8 @@ VERBOSE = True
 if __name__ == '__main__': 
     # run the experiments on the nslkdd dataset
     DATASET = 'nslkdd' 
-    #run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all', verbose=VERBOSE)
-    #run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only', verbose=VERBOSE) 
-    #run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.05, verbose=VERBOSE)
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all', verbose=VERBOSE)
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only', verbose=VERBOSE) 
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.05, verbose=VERBOSE)
     run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.1, verbose=VERBOSE)
     run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.15, verbose=VERBOSE)

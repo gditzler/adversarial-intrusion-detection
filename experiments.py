@@ -20,6 +20,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import os 
+import pickle 
 import numpy as np
 
 from sklearn.svm import OneClassSVM
@@ -111,7 +112,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     MODELS = ['if', 'svm', 'ee', 'lo']
     ATTACKS = ['baseline', 'deepfool', 'fgsm', 'pgd', 'dt']
     PERFS = ['accs', 'fss', 'tprs', 'tnrs', 'mccs']
-    OUTPUT_FILE = ''.join(['outputs/results_ids_', type, '_', dataset, '.npz'])
+    OUTPUT_FILE = ''.join(['outputs/results_ids_', type, '_', dataset, '.pkl'])
 
     # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
     # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
@@ -282,7 +283,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
 
-    np.savez(OUTPUT_FILE, all_pers = all_perfs)
+    pickle.save(all_perfs, open(OUTPUT_FILE, 'wb'))
 
 
 def run_experiment_causative(dataset:str='nslkdd', 
@@ -313,7 +314,7 @@ def run_experiment_causative(dataset:str='nslkdd',
     MODELS = ['if', 'svm', 'ee', 'lo']
     ATTACKS = ['baseline', 'pattern', 'single', 'svc']
     PERFS = ['accs', 'fss', 'tprs', 'tnrs', 'mccs']
-    OUTPUT_FILE = ''.join(['outputs/results_ids_causative_', dataset,'_pp', str(int(100*ppoison)), '.npz'])
+    OUTPUT_FILE = ''.join(['outputs/results_ids_causative_', dataset,'_pp', str(int(100*ppoison)), '.pkl'])
 
     # load the data from the npz files. note that all of the X_tr, X_te, y_tr and y_te are the same 
     # regarless of the file. the difference is in how the Xaml data are generated from a MLPNN. the 
@@ -455,4 +456,4 @@ def run_experiment_causative(dataset:str='nslkdd',
     if not os.path.isdir('outputs/'):
         os.mkdir('outputs/')
 
-    np.savez(OUTPUT_FILE, all_perfs = all_perfs)
+    pickle.save(all_perfs, open(OUTPUT_FILE, 'wb'))
