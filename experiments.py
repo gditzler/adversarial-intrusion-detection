@@ -143,8 +143,7 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
 def run_experiment_causative(dataset:str='nslkdd', 
                              trials:int=10, 
-                             ppoison:float=0.1, 
-                             verbose:bool=False): 
+                             ppoison:float=0.1): 
     """run the causative experiments
 
     This function runs the multiple causative attacks against several detection algorithms
@@ -155,11 +154,9 @@ def run_experiment_causative(dataset:str='nslkdd',
     param: dataset  Dataset [nslkdd]
     param: trials   Number of cross validation runs to perform 
     param: type     Type of experiment to run [attack_all, attack_only]
-    param: verbose  Print stuff to the output?
     """
-    
-    if verbose: 
-        print(''.join(['Dataset: ', dataset]))
+
+    print(''.join(['Dataset: ', dataset, ' (causative)']))
     
     # detection algorithm specific parameters 
     support_fraction = .5
