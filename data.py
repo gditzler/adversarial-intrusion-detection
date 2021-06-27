@@ -55,7 +55,7 @@ def load_dataset(name:str='unswnb15'):
     return X_tr, y_tr, X_te, y_te
 
 
-def nslkddProtocolType(df_set):
+def nslkddProtocolType(df_set:pd.DataFrame):
     df_set['protocol_type'][df_set['protocol_type'] == 'tcp'] = 0
     df_set['protocol_type'][df_set['protocol_type'] == 'udp'] = 1
     df_set['protocol_type'][df_set['protocol_type'] == 'icmp'] = 2

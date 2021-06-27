@@ -20,6 +20,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import os 
+import tqdm 
 import pickle 
 import numpy as np
 
@@ -31,8 +32,7 @@ from utils import init_perfs, scale_dict
 
 def run_experiment_exploratory(dataset:str='unswnb15', 
                                trials:int=10, 
-                               type:str='attacks_all', 
-                               verbose:bool=False): 
+                               type:str='attacks_all'): 
     """Run the experiment for exploratory attacks against intrusion detection. 
 
     This function runs the multiple exploratory attacks against several detection algorithms
@@ -43,11 +43,9 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     param: dataset  Dataset [nslkdd]
     param: trials   Number of cross validation runs to perform 
     param: type     Type of experiment to run [attack_all, attack_only]
-    param: verbose  Print stuff to the output?
     """
 
-    if verbose: 
-        print(''.join(['Dataset: ', dataset]))
+    print(''.join(['Dataset: ', dataset, ' (exploratory)']))
     
     # detection algorithm specific parameters 
     support_fraction = .5
@@ -67,15 +65,15 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     
     # load the deepfool data 
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_mlp_deepfool.npz']), allow_pickle=True)
-    _, _, _, _, X_adv_deepfool = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml']
+    X_adv_deepfool = data['Xaml']
 
     # load the fgsm data 
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_mlp_fgsm.npz']), allow_pickle=True)
-    _, _, _, _, X_adv_fgsm = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
+    X_adv_fgsm = data['Xaml'] 
 
     # load the pgd data 
     data = np.load(''.join(['data/', type, '/full_data_', dataset, '_mlp_pgd.npz']), allow_pickle=True)
-    _, _, _, _, X_adv_pgd = data['Xtr'], data['ytr'], data['Xte'], data['yte'], data['Xaml'] 
+    X_adv_pgd = data['Xaml'] 
 
     
     # there are two types of experimenta that we can run. first, we need to set the class labels into ones 
@@ -113,10 +111,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
 
     ell = 0
     for train_index, _ in kf.split(X_tr):
-
-        if verbose: 
-            print(''.join(['   > Running ', str(ell+1), ' of ', str(trials)]))
-        ell += 1
 
         # split the original data into training / testing datasets. we are not going to 
         # use the testing data since we are not going to learn a classifier. 
