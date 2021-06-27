@@ -109,7 +109,6 @@ def run_experiment_exploratory(dataset:str='unswnb15',
     
     all_perfs = init_perfs(MODELS=MODELS, ATTACKS=ATTACKS, PERFS=PERFS) 
 
-    ell = 0
     for train_index, _ in kf.split(X_tr):
 
         # split the original data into training / testing datasets. we are not going to 
