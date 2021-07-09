@@ -38,3 +38,17 @@ if __name__ == '__main__':
                                                      atype='svm')
     np.savez_compressed('data/causative/full_data_awid_svc.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
 
+    Xtr, ytr, Xte, yte = load_dataset(name='nslkdd')
+    q = int(.15*len(ytr))
+    n = np.random.randint(0, len(ytr), 500)
+    m = np.random.randint(0, len(ytr), q) 
+    X = Xtr[m] #[q:]
+    y = ytr[m] #[q:]
+
+    Xadv, yadv = generate_causative_adversarial_data(X_tr=Xtr[n], 
+                                                     y_tr=ytr[n], 
+                                                     X=X, 
+                                                     y=y,
+                                                     atype='svm')
+    np.savez_compressed('data/causative/full_data_awid_svc.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
+
