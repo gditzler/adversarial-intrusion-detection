@@ -24,7 +24,6 @@ import pandas as pd
 import tensorflow as tf
 
 from sklearn.svm import SVC
-from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from art.attacks.evasion import FastGradientMethod, DeepFool
@@ -52,11 +51,13 @@ def load_dataset(name:str='unswnb15'):
         X_tr, y_tr, X_te, y_te = load_unswnb()
     elif name == 'nslkdd': 
         X_tr, y_tr, X_te, y_te = load_nslkdd()
+    elif name == 'awid': 
+        X_tr, y_tr, X_te, y_te = load_awid()
         
     return X_tr, y_tr, X_te, y_te
 
 
-def nslkddProtocolType(df_set):
+def nslkddProtocolType(df_set:pd.DataFrame):
     df_set['protocol_type'][df_set['protocol_type'] == 'tcp'] = 0
     df_set['protocol_type'][df_set['protocol_type'] == 'udp'] = 1
     df_set['protocol_type'][df_set['protocol_type'] == 'icmp'] = 2
@@ -128,6 +129,18 @@ def load_nslkdd():
 
     return X_tr, y_tr, X_te, y_te
 
+def load_awid():
+    drop_cols = ['Unnamed: 0']
+    df_tr = pd.read_csv('data/AWID/awid_training.csv')
+    df_te = pd.read_csv('data/AWID/awid_testing.csv')
+
+    df_tr = df_tr.sample(frac=1).reset_index(drop=True).drop(drop_cols, axis = 1)
+    df_te = df_te.sample(frac=1).reset_index(drop=True).drop(drop_cols, axis = 1)
+    df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
+    X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
+    X_te, y_te = df_te.values[:,:-1], df_te['target'].values
+
+    return X_tr, y_tr, X_te, y_te 
 
 def load_unswnb(): 
     """Load the UNDWNB15 dataset from the data/ folder. Note you need to download the data 
@@ -158,10 +171,13 @@ def standardize_df_off_tr(df_tr:pd.DataFrame, df_te:pd.DataFrame):
     """
     for key in df_tr.keys(): 
         if key != 'target': 
+            ssd = df_tr[key].values.std()
+            if np.abs(ssd) < .0001: 
+                ssd = .001
             # scale the testing data w/ the training means/stds
-            df_te[key] = (df_te[key].values - df_tr[key].values.mean())/df_tr[key].values.std()
+            df_te[key] = (df_te[key].values - df_tr[key].values.mean())/ssd
             # scale the training data 
-            df_tr[key] = (df_tr[key].values - df_tr[key].values.mean())/df_tr[key].values.std()
+            df_tr[key] = (df_tr[key].values - df_tr[key].values.mean())/ssd
     return df_tr, df_te
 
 
@@ -172,6 +188,10 @@ def generate_exploratory_adversarial_data(X_tr:np.ndarray,
                                           atype:str='fgsm'):
     """Generate adversarial data samples for exploratory attacks 
 
+    This function can generate exploratory adversarial data. Note that some of 
+    these datasets take a very long time to run. This is esp the case with the 
+    Carlini-Wagner attack. 
+
     :param X_tr: Dataset 
     :param y_tr: Labels vector 
     :param X: Dataset that is the seed for the adversarial samples
@@ -180,10 +200,8 @@ def generate_exploratory_adversarial_data(X_tr:np.ndarray,
     :return Numpy array with the adversarial attack dataset
     """
     if ctype == 'svc': 
-        clfr = SVC(C=1.0, kernel='rbf')
-    elif ctype == 'gbc':
-        # currently does not work.  
-        clfr = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=0)
+        # set the classsifier as the svc 
+        clfr = SVC(C=1.0, kernel='rbf') 
     elif ctype == 'dt': 
         clfr = DecisionTreeClassifier(criterion='gini', 
                                       splitter='best', 
@@ -240,12 +258,25 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
                                        max_iter:int=10,
                                        pp_poison:float=0.33,
                                        atype:str='cleanlabel_pattern'):
-    """
+    """Generate data for causative adversarial attacks 
 
-    :param atype: String that is the attack type ['cleanlabel_pattern', 'cleanlabel_single']
+    This function can be used to generate causative adversarial attacks. Currently 
+    there are three attacks that are implemented. Note that each of them take a 
+    long time to run, therefore, it is recommended that you run the code for a while 
+    on a machine that is only going to generate the data. Note that you'll get a 
+    time out error on Google Colab. 
+
+    :param X_tr: training features 
+    :param y_tr: training labels 
+    :param X: seeds to train adversarial data 
+    :param y: labels to train adversarial data 
+    :param max_iter: number of optimization to run for the differnet attacks 
+    :param pp_poison: poisoning percents (not really used)
+    :param atype: String that is the attack type ['cleanlabel_pattern', 'cleanlabel_single', 'svm']
     """
 
     if atype == 'cleanlabel_pattern': 
+        # run the backdoor cleanlabel pattern attack 
         clfr = SVC(C=1.0, kernel='rbf')
         ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
         y_ohe = tf.keras.utils.to_categorical(y, 2)
@@ -253,19 +284,28 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_pattern_bd)  
         # target [1,0] class which is the normal data 
-        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
-        print(y_ohe)
-        Xadv, yadv = attack.poison(x=X, y=y_ohe) 
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, 
+                                                   clfr, 
+                                                   np.array([1,0]), 
+                                                   pp_poison=pp_poison, 
+                                                   max_iter=max_iter)
+        Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'cleanlabel_single': 
+        # run the backdoor cleanlabel single attack 
         clfr = SVC(C=1.0, kernel='rbf')
         ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
         y_ohe = tf.keras.utils.to_categorical(y, 2)
         clfr = SklearnClassifier(clfr, clip_values=(-5.,5.))
         clfr.fit(X_tr, ytr_ohe)
         backdoor = PoisoningAttackBackdoor(add_single_bd)
-        attack = PoisoningAttackCleanLabelBackdoor(backdoor, clfr, [1,0], pp_poison=pp_poison, max_iter=max_iter)
-        Xadv, yadv = attack.poison(x=X, y=y_ohe)
+        attack = PoisoningAttackCleanLabelBackdoor(backdoor, 
+                                                   clfr, 
+                                                   np.array([1,0]), 
+                                                   pp_poison=pp_poison, 
+                                                   max_iter=max_iter)
+        Xadv, yadv = attack.poison(x=np.array(X), y=np.array(y_ohe))
     elif atype == 'svm':
+        # run the support vector machine attack 
         n = int(.8*len(y_tr))
         clfr = SVC(C=1.0, kernel='rbf')
         ytr_ohe = tf.keras.utils.to_categorical(y_tr, 2)
@@ -279,6 +319,8 @@ def generate_causative_adversarial_data(X_tr:np.ndarray,
                                     X_tr[n:].astype(np.float64), 
                                     ytr_ohe[n:].astype(np.float64), 
                                     25)
+        # errors were thrown when we were not casting the inputs to the poisoning 
+        # function. should not be too much overhead . 
         y_ohe = np.ones(y_ohe.shape) - y_ohe
         X = X.astype(np.float64)
         y_ohe = y_ohe.astype(np.float64)

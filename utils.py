@@ -69,3 +69,25 @@ def get_performance(y_true:np.ndarray,
         mcc = (tp*tn-fp*fn)/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))
 
     return acc, fs, tpr, tnr, mcc
+
+
+def init_perfs(MODELS:list, ATTACKS:list, PERFS:list):
+    """intialize a dictionary of performances  
+    """
+    all_perfs = {}
+    for m in MODELS: 
+        for a in ATTACKS: 
+            for p in PERFS: 
+                all_perfs[''.join([p, '_', m, '_', a])] = 0.0
+    return all_perfs
+
+
+def scale_dict(all_perfs:dict, MODELS:list, ATTACKS:list, PERFS:list, TRIALS):
+    """intialize a dictionary of performances  
+    """
+    for m in MODELS: 
+        for a in ATTACKS: 
+            for p in PERFS: 
+                all_perfs[''.join([p, '_', m, '_', a])] /= TRIALS
+    return all_perfs 
+

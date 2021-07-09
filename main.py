@@ -20,25 +20,15 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 
-from experiments import run_experiment_exploratory
+from experiments import run_experiment_exploratory, run_experiment_causative
 
+TRIALS = 15 
 
 if __name__ == '__main__': 
-    run_experiment_exploratory(dataset='unswnb15',
-                               trials=5, 
-                               type='attacks_all', 
-                               verbose=True)
-    run_experiment_exploratory(dataset='unswnb15',
-                               trials=5, 
-                               type='attacks_only', 
-                               verbose=True) 
-
-    run_experiment_exploratory(dataset='nslkdd',
-                               trials=5, 
-                               type='attacks_all', 
-                               verbose=True)
-    run_experiment_exploratory(dataset='nslkdd',
-                               trials=5, 
-                               type='attacks_only', 
-                               verbose=True) 
-    print('Done')
+    # run the experiments on the nslkdd dataset
+    DATASET = 'nslkdd' 
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all')
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only') 
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.05)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.1)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.15)
