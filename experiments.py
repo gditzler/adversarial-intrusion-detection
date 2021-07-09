@@ -188,8 +188,8 @@ def run_experiment_causative(dataset:str='nslkdd',
     y_te[y_te==0] =  1
 
     for t in range(trials):
-        if verbose: 
-            print(''.join(['   > Running ', str(t+1), ' of ', str(trials)]))
+        
+        print(''.join(['   > Running ', str(t+1), ' of ', str(trials)]))
 
         train_index = np.random.randint(0, len(y_tr), len(y_tr))
 

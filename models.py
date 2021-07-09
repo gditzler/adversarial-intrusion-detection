@@ -19,14 +19,13 @@
 # OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
 # OTHER DEALINGS IN THE SOFTWARE.
 
-import copy 
+import copy
 import numpy as np 
 from sklearn.svm import OneClassSVM
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
 from sklearn.covariance import EllipticEnvelope
 from utils import get_performance
-from concurrent.futures import ProcessPoolExecutor
 
 def evaluate_models_exploratory(X_normal:np.ndarray, 
                                 X_te:np.ndarray, 

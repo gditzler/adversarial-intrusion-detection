@@ -51,6 +51,8 @@ def load_dataset(name:str='unswnb15'):
         X_tr, y_tr, X_te, y_te = load_unswnb()
     elif name == 'nslkdd': 
         X_tr, y_tr, X_te, y_te = load_nslkdd()
+    elif name == 'awid': 
+        X_tr, y_tr, X_te, y_te = load_awid()
         
     return X_tr, y_tr, X_te, y_te
 
@@ -127,6 +129,18 @@ def load_nslkdd():
 
     return X_tr, y_tr, X_te, y_te
 
+def load_awid():
+    drop_cols = ['Unnamed: 0']
+    df_tr = pd.read_csv('data/AWID/awid_training.csv')
+    df_te = pd.read_csv('data/AWID/awid_testing.csv')
+
+    df_tr = df_tr.sample(frac=1).reset_index(drop=True).drop(drop_cols, axis = 1)
+    df_te = df_te.sample(frac=1).reset_index(drop=True).drop(drop_cols, axis = 1)
+    df_tr, df_te = standardize_df_off_tr(df_tr, df_te)
+    X_tr, y_tr = df_tr.values[:,:-1], df_tr['target'].values
+    X_te, y_te = df_te.values[:,:-1], df_te['target'].values
+
+    return X_tr, y_tr, X_te, y_te 
 
 def load_unswnb(): 
     """Load the UNDWNB15 dataset from the data/ folder. Note you need to download the data 
@@ -157,10 +171,13 @@ def standardize_df_off_tr(df_tr:pd.DataFrame, df_te:pd.DataFrame):
     """
     for key in df_tr.keys(): 
         if key != 'target': 
+            ssd = df_tr[key].values.std()
+            if np.abs(ssd) < .0001: 
+                ssd = .001
             # scale the testing data w/ the training means/stds
-            df_te[key] = (df_te[key].values - df_tr[key].values.mean())/df_tr[key].values.std()
+            df_te[key] = (df_te[key].values - df_tr[key].values.mean())/ssd
             # scale the training data 
-            df_tr[key] = (df_tr[key].values - df_tr[key].values.mean())/df_tr[key].values.std()
+            df_tr[key] = (df_tr[key].values - df_tr[key].values.mean())/ssd
     return df_tr, df_te
 
 

@@ -24,7 +24,7 @@ from data import generate_causative_adversarial_data, load_dataset
 
 if __name__ == '__main__': 
 
-    Xtr, ytr, Xte, yte = load_dataset(name='nslkdd')
+    Xtr, ytr, Xte, yte = load_dataset(name='awid')
     q = int(.15*len(ytr))
     n = np.random.randint(0, len(ytr), 500)
     m = np.random.randint(0, len(ytr), q) 
@@ -36,5 +36,5 @@ if __name__ == '__main__':
                                                      X=X, 
                                                      y=y,
                                                      atype='svm')
-    np.savez_compressed('data/causative/full_data_nslkdd_svc.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
+    np.savez_compressed('data/causative/full_data_awid_svc.npz', Xtr=Xtr, ytr=ytr, Xte=Xte, yte=yte, Xaml=Xadv, yaml=yadv)
 
