@@ -26,6 +26,15 @@ TRIALS = 15
 
 if __name__ == '__main__': 
     # run the experiments on the nslkdd dataset
+    DATASET = 'awid' 
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all')
+    run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only') 
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.05)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.1)
+    run_experiment_causative(dataset=DATASET, trials=TRIALS, ppoison=0.15)
+
+    
+    # run the experiments on the nslkdd dataset
     DATASET = 'nslkdd' 
     run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_all')
     run_experiment_exploratory(dataset=DATASET, trials=TRIALS, type='attacks_only') 
